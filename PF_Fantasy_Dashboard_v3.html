@@ -1038,9 +1038,191 @@ body.role-manager .manager-up { display:block; }
 
   <!-- My stats this week (agent view) / league snapshot (admin) -->
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
-  <div class="section-title" style="margin-bottom:0;flex:1;"><span class="st-accent">◆</span> Office Battle</div>
-  <div id="matchup-filter-ui"></div>
+  <div class="section-title" style="margin-bottom:0;flex:1;"><span class="st-accent">◆</span> League Snapshot — <span id="hs-period-label">May 2026</span></div>
+  <div style="display:flex;gap:6px;">
+    <div class="week-btn period-btn" onclick="setPeriod('daily',this)">Today</div>
+    <div class="week-btn period-btn" onclick="setPeriod('weekly',this)">This Week</div>
+    <div class="week-btn period-btn active" onclick="setPeriod('monthly',this)">Month</div>
+  </div>
 </div>
+  <div class="stat-grid" id="home-stat-grid">
+    <div class="stat-card accent">
+      <div class="stat-card-label">Total SUBS</div>
+      <div class="stat-card-value green" id="hs-subs">248</div>
+      <div class="stat-card-sub">All agents · <span id="hs-period-label-sub">May 2026</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Total Offers</div>
+      <div class="stat-card-value" id="hs-offers">179</div>
+      <div class="stat-card-sub">Across all offices</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">New Units</div>
+      <div class="stat-card-value" id="hs-units">28</div>
+      <div class="stat-card-sub">May 2026</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Avg Talk Mins/Hr</div>
+      <div class="stat-card-value" id="hs-talk">11.1</div>
+      <div class="stat-card-sub">League average</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Active Agents</div>
+      <div class="stat-card-value" id="hs-active">42</div>
+      <div class="stat-card-sub">3 offices</div>
+    </div>
+  </div>
+
+  <!-- Active contest-- Active contest quick view -->
+  <div class="section-title"><span class="st-accent">◆</span> Active Contests</div>
+  <div class="grid-2">
+    <div class="contest-card" onclick="switchTab('matchups')">
+      <div class="contest-card-header">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <span class="contest-type-badge weekly">Weekly</span>
+            <span class="matchup-status live">Live</span>
+          </div>
+          <div class="contest-name">Week 1 — Office Matchup</div>
+          <div class="contest-meta">BLO vs CA vs FL · Apr 28–May 2</div>
+        </div>
+        <div style="text-align:right">
+          <div class="pts-val">BLO</div>
+          <div style="font-size:11px;color:var(--text3)">Currently leading</div>
+        </div>
+      </div>
+      <div class="contest-body" style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:12px;color:var(--text3)">Click to see full breakdown</span>
+        <span class="contest-expand">→</span>
+      </div>
+    </div>
+    <div class="contest-card" onclick="switchTab('contests')">
+      <div class="contest-card-header">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <span class="contest-type-badge daily">Daily</span>
+            <span class="matchup-status live">Live</span>
+          </div>
+          <div class="contest-name">Daily Sprint — SUBS Race</div>
+          <div class="contest-meta">Today only · Top 3 win</div>
+        </div>
+        <div style="text-align:right">
+          <div class="pts-val">4</div>
+          <div style="font-size:11px;color:var(--text3)">Leads today</div>
+        </div>
+      </div>
+      <div class="contest-body" style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:12px;color:var(--text3)">Ben Stark leading</span>
+        <span class="contest-expand">→</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Office standings quick -->
+  <div class="section-title"><span class="st-accent">◆</span> Office Standings — Week 1</div>
+  <div class="office-strip">
+    <div class="office-card">
+      <div class="office-card-header blo">
+        <div>
+          <div class="office-card-name blo">BLO — Buffalo</div>
+          <div style="font-size:11px;color:var(--text3)">Anthony Giordano · 12 agents</div>
+        </div>
+        <div style="text-align:right">
+          <div class="office-pts-big">8,420</div>
+          <div style="font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;">pts</div>
+        </div>
+      </div>
+      <div class="office-stat-rows">
+        <div class="office-stat-row"><span class="office-stat-label">SUBS</span><span class="office-stat-val">62</span></div>
+        <div class="office-stat-row"><span class="office-stat-label">OFFERS</span><span class="office-stat-val">241</span></div>
+        <div class="office-stat-row"><span class="office-stat-label">NEW UNITS</span><span class="office-stat-val">11</span></div>
+        <div class="office-stat-row"><span class="office-stat-label">Top Agent</span><span style="font-size:12px;color:var(--blo);font-weight:600;">Jack Grady</span></div>
+      </div>
+    </div>
+    <div class="office-card">
+      <div class="office-card-header ca">
+        <div>
+          <div class="office-card-name ca">CA — California</div>
+          <div style="font-size:11px;color:var(--text3)">Jonathan McCoy · 12 agents</div>
+        </div>
+        <div style="text-align:right">
+          <div class="office-pts-big">7,180</div>
+          <div style="font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;">pts</div>
+        </div>
+      </div>
+      <div class="office-stat-rows">
+        <div class="office-stat-row"><span class="office-stat-label">SUBS</span><span class="office-stat-val">51</span></div>
+        <div class="office-stat-row"><span class="office-stat-label">OFFERS</span><span class="office-stat-val">198</span></div>
+        <div class="office-stat-row"><span class="office-stat-label">NEW UNITS</span><span class="office-stat-val">9</span></div>
+        <div class="office-stat-row"><span class="office-stat-label">Top Agent</span><span style="font-size:12px;color:var(--ca);font-weight:600;">Travis Jones</span></div>
+      </div>
+    </div>
+    <div class="office-card">
+      <div class="office-card-header fl">
+        <div>
+          <div class="office-card-name fl">FL — Florida</div>
+          <div style="font-size:11px;color:var(--text3)">Josiah Emdin · 15 agents</div>
+        </div>
+        <div style="text-align:right">
+          <div class="office-pts-big">6,950</div>
+          <div style="font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;">pts</div>
+        </div>
+      </div>
+      <div class="office-stat-rows">
+        <div class="office-stat-row"><span class="office-stat-label">SUBS</span><span class="office-stat-val">48</span></div>
+        <div class="office-stat-row"><span class="office-stat-label">OFFERS</span><span class="office-stat-val">183</span></div>
+        <div class="office-stat-row"><span class="office-stat-label">NEW UNITS</span><span class="office-stat-val">8</span></div>
+        <div class="office-stat-row"><span class="office-stat-label">Top Agent</span><span style="font-size:12px;color:var(--fl);font-weight:600;">Steven Triana</span></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /view-home -->
+
+
+<!-- ══════════════════════════════════════
+     MATCHUPS TAB
+══════════════════════════════════════ -->
+<div class="view" id="view-matchups">
+
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="page-title">Matchups</div>
+      <div class="page-subtitle">Head-to-head results, office battles, and weekly scores</div>
+    </div>
+    <div class="page-actions">
+      <div class="last-updated"><div class="lu-dot"></div>Updated today, 9:00 AM</div>
+    </div>
+  </div>
+
+  <!-- Week selector -->
+  <div class="week-sel-bar">
+    <div class="week-btn active" onclick="selectWeek(1,this)">Week 1</div>
+    <div class="week-btn" onclick="selectWeek(2,this)">Week 2</div>
+    <div class="week-btn" onclick="selectWeek(3,this)">Week 3</div>
+    <div class="week-btn" onclick="selectWeek(4,this)">Week 4</div>
+    <div class="week-btn" onclick="selectWeek(5,this)">Week 5</div>
+    <div class="week-btn" onclick="selectWeek(6,this)">Week 6</div>
+    <div class="week-btn" onclick="selectWeek(7,this)">Week 7</div>
+    <div class="week-btn" onclick="selectWeek(8,this)">Week 8</div>
+  </div>
+
+  <!-- Subtab pills -->
+  <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+    <div class="btn primary" id="matchup-sub-office" onclick="showMatchupSub('office')">Office vs Office</div>
+    <div class="btn" id="matchup-sub-1v1" onclick="showMatchupSub('1v1')">1v1 Matchups</div>
+    <div class="btn" id="matchup-sub-history" onclick="showMatchupSub('history')">W/L History</div>
+  </div>
+
+  <!-- Office vs Office -->
+  <div id="matchup-panel-office">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+  <div class="section-title" style="margin-bottom:0;flex:1;"><span class="st-accent">◆</span> Office Battle</div>
+  <div style="display:flex;gap:6px;">
+    <div class="week-btn period-btn" onclick="setPeriod('daily',this)">Today</div>
+    <div class="week-btn period-btn" onclick="setPeriod('weekly',this)">This Week</div>
+    <div class="week-btn period-btn active" onclick="setPeriod('monthly',this)">Month</div>
+  </div>
 </div>
 
     <!-- BLO vs CA featured -->
@@ -2744,11 +2926,69 @@ let PTS=loadPts();
 // ══════════════════════════════════════════════════════════
 let CURRENT_PERIOD = 'monthly'; // default
 
+function getFilteredData(period) {
+  const today = new Date();
+  const todayStr = today.toISOString().slice(0,10);
+  // Get Monday of current week
+  const day = today.getDay();
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - (day===0?6:day-1));
+  const mondayStr = monday.toISOString().slice(0,10);
+  // Get first of current month
+  const monthStr = today.getFullYear()+'-'+(String(today.getMonth()+1).padStart(2,'0'))+'-01';
 
+  let rows = DAILY_DATA;
+  if(period==='daily')   rows = DAILY_DATA.filter(r=>r.date===todayStr);
+  if(period==='weekly')  rows = DAILY_DATA.filter(r=>r.date>=mondayStr);
+  if(period==='monthly') rows = DAILY_DATA.filter(r=>r.date.slice(0,7)===today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0'));
 
+  // If no data for today/week yet, fall back to all available data
+  if(rows.length===0) rows = DAILY_DATA;
 
+  // Aggregate by agent
+  const map = {};
+  rows.forEach(r=>{
+    if(!map[r.pf_id]) map[r.pf_id] = {
+      pf_id:r.pf_id, name:r.name, office:r.office,
+      subs:0,offers:0,units:0,initial:0,talk_vals:[],days:0
+    };
+    const d=map[r.pf_id];
+    d.subs+=r.subs; d.offers+=r.offers; d.units+=r.units; d.initial+=r.initial;
+    if(r.talk>0) d.talk_vals.push(r.talk);
+    if(r.subs||r.offers||r.units||r.talk||r.initial) d.days++;
+  });
 
+  return Object.values(map).map(d=>{
+    const avg_talk = d.talk_vals.length ? +(d.talk_vals.reduce((a,b)=>a+b,0)/d.talk_vals.length).toFixed(2) : 0;
+    // Merge with REAL_STATS for full agent info
+    const full = REAL_STATS.find(a=>a.pf_id===d.pf_id)||{};
+    return {...full,...d,talk:avg_talk,pts:0};
+  }).map(a=>{a.pts=calcAgentPts(a,PTS);return a;});
+}
 
+function getOfficeFilteredTotals(period) {
+  const data = getFilteredData(period);
+  const tots = {BLO:{subs:0,offers:0,units:0,initial:0,talk_vals:[]},CA:{subs:0,offers:0,units:0,initial:0,talk_vals:[]},FL:{subs:0,offers:0,units:0,initial:0,talk_vals:[]}};
+  data.forEach(a=>{
+    const o=a.office; if(!tots[o]) return;
+    tots[o].subs+=a.subs||0; tots[o].offers+=a.offers||0;
+    tots[o].units+=a.units||0; tots[o].initial+=a.initial||0;
+    if(a.talk>0) tots[o].talk_vals.push(a.talk);
+  });
+  ['BLO','CA','FL'].forEach(o=>{
+    const t=tots[o];
+    t.talk = t.talk_vals.length ? +(t.talk_vals.reduce((a,b)=>a+b,0)/t.talk_vals.length).toFixed(2) : 0;
+    t.pts  = Math.round(t.initial*PTS.initial + t.subs*PTS.subs + t.offers*PTS.offers + t.units*PTS.units + t.talk*PTS.talk);
+  });
+  return tots;
+}
+
+function setPeriod(period, el) {
+  CURRENT_PERIOD = period;
+  document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+  refreshAllViews();
+}
 
 function refreshAllViews() {
   renderLeaderboard();
@@ -3461,390 +3701,6 @@ function saveContest2Settings(){
   const el=document.getElementById('c2-title'); if(el)el.textContent=CONTEST2_CONFIG.name;
   const msg=document.getElementById('c2-save-msg');
   if(msg){msg.style.display='block';setTimeout(()=>msg.style.display='none',3000);}
-}
-
-
-// ══════════════════════════════════════════════════════════════
-// CASCADING DATE FILTER SYSTEM
-// ══════════════════════════════════════════════════════════════
-
-// Current filter state
-let FILTER = {
-  level1: 'DAY',       // SEASON | MONTH | WEEK | DAY
-  level2: 'yesterday', // depends on level1
-  level3: null,        // only for SEASON > YEAR
-};
-
-function getAvailableDates() {
-  // Get all unique dates from DAILY_DATA, sorted descending
-  const dates = [...new Set(DAILY_DATA.map(r => r.date))].sort().reverse();
-  return dates;
-}
-
-function getAvailableMonths() {
-  const months = [...new Set(DAILY_DATA.map(r => r.date.slice(0,7)))].sort().reverse();
-  return months.map(m => {
-    const [y, mo] = m.split('-');
-    const name = new Date(y, mo-1, 1).toLocaleString('default', {month:'long'});
-    return {key: m, label: name + ' ' + y};
-  });
-}
-
-function getWeekRanges() {
-  // Get Mon-Sun week ranges that have data, last 8 weeks
-  const dates = getAvailableDates();
-  if (!dates.length) return [];
-  const weeks = {};
-  dates.forEach(d => {
-    const dt   = new Date(d + 'T12:00:00');
-    const day  = dt.getDay(); // 0=Sun
-    const diff = (day === 0) ? -6 : 1 - day; // Monday
-    const mon  = new Date(dt);
-    mon.setDate(dt.getDate() + diff);
-    const sun = new Date(mon);
-    sun.setDate(mon.getDate() + 6);
-    const key = mon.toISOString().slice(0,10);
-    if (!weeks[key]) {
-      const fmt = d => new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
-      weeks[key] = {
-        key,
-        end: sun.toISOString().slice(0,10),
-        label: fmt(key) + ' – ' + fmt(sun.toISOString().slice(0,10)),
-      };
-    }
-  });
-  return Object.values(weeks).sort((a,b) => b.key.localeCompare(a.key)).slice(0,8);
-}
-
-function getFilteredData(periodOverride) {
-  // If called with old-style string, convert
-  if (periodOverride && typeof periodOverride === 'string' &&
-      ['daily','weekly','monthly'].includes(periodOverride)) {
-    if (periodOverride === 'daily')   return applyFilter({level1:'DAY',   level2:'yesterday'});
-    if (periodOverride === 'weekly')  return applyFilter({level1:'WEEK',  level2:'thisweek'});
-    if (periodOverride === 'monthly') return applyFilter({level1:'MONTH', level2:getAvailableMonths()[0]?.key});
-  }
-  return applyFilter(FILTER);
-}
-
-function applyFilter(filter) {
-  const dates = getAvailableDates();
-  const today = new Date();
-  today.setHours(0,0,0,0);
-
-  let rows = [];
-
-  if (filter.level1 === 'DAY') {
-    let targetDate = null;
-    if (filter.level2 === 'yesterday') {
-      const d = new Date(today); d.setDate(d.getDate()-1);
-      targetDate = d.toISOString().slice(0,10);
-    } else if (filter.level2 === 'twodays') {
-      const d = new Date(today); d.setDate(d.getDate()-2);
-      targetDate = d.toISOString().slice(0,10);
-    } else if (filter.level2 === 'threedays') {
-      const d = new Date(today); d.setDate(d.getDate()-3);
-      targetDate = d.toISOString().slice(0,10);
-    } else if (filter.level2 === 'fourdays') {
-      const d = new Date(today); d.setDate(d.getDate()-4);
-      targetDate = d.toISOString().slice(0,10);
-    } else if (filter.level2 === 'specific' && filter.level3) {
-      targetDate = filter.level3;
-    }
-    // If no data for target date, use most recent available
-    if (targetDate && DAILY_DATA.some(r => r.date === targetDate)) {
-      rows = DAILY_DATA.filter(r => r.date === targetDate);
-    } else {
-      rows = DAILY_DATA.filter(r => r.date === (dates[0] || ''));
-    }
-  }
-
-  else if (filter.level1 === 'WEEK') {
-    if (filter.level2 === 'thisweek' || filter.level2 === 'lastweek' ||
-        filter.level2 === 'last14' || (filter.level2 && filter.level2.length === 10)) {
-      let start, end;
-      const day  = today.getDay();
-      const diff = (day === 0) ? -6 : 1 - day;
-      const mon  = new Date(today); mon.setDate(today.getDate()+diff);
-      const sun  = new Date(mon);   sun.setDate(mon.getDate()+6);
-
-      if (filter.level2 === 'thisweek') {
-        start = mon.toISOString().slice(0,10);
-        end   = sun.toISOString().slice(0,10);
-      } else if (filter.level2 === 'lastweek') {
-        const lm = new Date(mon); lm.setDate(mon.getDate()-7);
-        const ls = new Date(lm);  ls.setDate(lm.getDate()+6);
-        start = lm.toISOString().slice(0,10);
-        end   = ls.toISOString().slice(0,10);
-      } else if (filter.level2 === 'last14') {
-        const d14 = new Date(today); d14.setDate(today.getDate()-14);
-        start = d14.toISOString().slice(0,10);
-        end   = today.toISOString().slice(0,10);
-      } else {
-        // specific week key (YYYY-MM-DD = Monday)
-        const wk = getWeekRanges().find(w => w.key === filter.level2);
-        if (wk) { start = wk.key; end = wk.end; }
-      }
-      if (start && end) rows = DAILY_DATA.filter(r => r.date >= start && r.date <= end);
-    }
-    if (!rows.length) rows = DAILY_DATA.filter(r => r.date === (dates[0]||''));
-  }
-
-  else if (filter.level1 === 'MONTH') {
-    const monthKey = filter.level2; // "YYYY-MM"
-    if (monthKey) {
-      rows = DAILY_DATA.filter(r => r.date.slice(0,7) === monthKey);
-    }
-    if (!rows.length) rows = DAILY_DATA;
-  }
-
-  else if (filter.level1 === 'SEASON') {
-    if (filter.level2 === 'alltime') {
-      rows = DAILY_DATA;
-    } else if (filter.level2 === 'year' && filter.level3) {
-      rows = DAILY_DATA.filter(r => r.date.startsWith(filter.level3));
-    } else if (filter.level2 && filter.level2.startsWith('Q')) {
-      // Q1=Jan-Mar, Q2=Apr-Jun, Q3=Jul-Sep, Q4=Oct-Dec
-      const qMap = {Q1:['01','02','03'],Q2:['04','05','06'],Q3:['07','08','09'],Q4:['10','11','12']};
-      const [q, y] = filter.level2.split('-'); // e.g. "Q2-2026"
-      const months = qMap[q] || [];
-      rows = DAILY_DATA.filter(r => r.date.startsWith(y) && months.includes(r.date.slice(5,7)));
-    } else {
-      rows = DAILY_DATA;
-    }
-    if (!rows.length) rows = DAILY_DATA;
-  }
-
-  // Aggregate rows by agent
-  const map = {};
-  rows.forEach(r => {
-    if (!r.pf_id) return;
-    if (!map[r.pf_id]) {
-      const full = REAL_STATS.find(a => a.pf_id === r.pf_id) || {};
-      map[r.pf_id] = {
-        pf_id: r.pf_id, id: r.pf_id, name: r.name || full.name || '',
-        office: r.office || full.office || '',
-        initials: full.initials || (r.name||'??').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase(),
-        mgr: full.mgr || '', tier: 3, role: 'agent',
-        subs:0, offers:0, units:0, initial:0, talk_vals:[], days:0,
-      };
-    }
-    const d = map[r.pf_id];
-    d.subs    += r.subs    || 0;
-    d.offers  += r.offers  || 0;
-    d.units   += r.units   || 0;
-    d.initial += r.initial || 0;
-    if (r.talk > 0) d.talk_vals.push(r.talk);
-    if (r.subs||r.offers||r.units||r.talk||r.initial) d.days++;
-  });
-
-  return Object.values(map).map(d => {
-    const talk = d.talk_vals.length
-      ? Math.round(d.talk_vals.reduce((a,b)=>a+b,0)/d.talk_vals.length*100)/100 : 0;
-    delete d.talk_vals;
-    d.talk = talk;
-    d.pts  = calcAgentPts(d, PTS);
-    return d;
-  });
-}
-
-function getOfficeFilteredTotals(periodOrFilter) {
-  const data = typeof periodOrFilter === 'object'
-    ? getFilteredData() : getFilteredData(periodOrFilter);
-  const tots = {
-    BLO:{subs:0,offers:0,units:0,initial:0,talk_vals:[]},
-    CA: {subs:0,offers:0,units:0,initial:0,talk_vals:[]},
-    FL: {subs:0,offers:0,units:0,initial:0,talk_vals:[]},
-  };
-  data.forEach(a => {
-    const o = a.office; if(!tots[o]) return;
-    tots[o].subs    += a.subs    || 0;
-    tots[o].offers  += a.offers  || 0;
-    tots[o].units   += a.units   || 0;
-    tots[o].initial += a.initial || 0;
-    if (a.talk > 0) tots[o].talk_vals.push(a.talk);
-  });
-  ['BLO','CA','FL'].forEach(o => {
-    const t = tots[o];
-    t.talk = t.talk_vals.length
-      ? Math.round(t.talk_vals.reduce((a,b)=>a+b,0)/t.talk_vals.length*100)/100 : 0;
-    t.pts  = Math.round(t.initial*PTS.initial + t.subs*PTS.subs +
-                        t.offers*PTS.offers   + t.units*PTS.units + t.talk*PTS.talk);
-    delete t.talk_vals;
-  });
-  return tots;
-}
-
-// ── FILTER UI BUILDER ─────────────────────────────────────────────
-function buildFilterUI(containerId, onChange) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-
-  function render() {
-    const months = getAvailableMonths();
-    const weeks  = getWeekRanges();
-    const dates  = getAvailableDates();
-    const years  = [...new Set(DAILY_DATA.map(r=>r.date.slice(0,4)))].sort().reverse();
-    const quarters = [];
-    years.forEach(y => {
-      ['Q4','Q3','Q2','Q1'].forEach(q => {
-        const qMap = {Q1:['01'],Q2:['04'],Q3:['07'],Q4:['10']};
-        if (DAILY_DATA.some(r => r.date.startsWith(y) && r.date.slice(5,7) >= qMap[q][0])) {
-          quarters.push({key:q+'-'+y, label:q+' '+y});
-        }
-      });
-    });
-
-    let html = '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">';
-
-    // Level 1
-    html += '<select id="fl-l1" onchange="onFilterL1Change()" style="'+selectStyle()+'">';
-    ['SEASON','MONTH','WEEK','DAY'].forEach(v => {
-      html += `<option value="${v}"${FILTER.level1===v?' selected':''}>${v}</option>`;
-    });
-    html += '</select>';
-
-    // Level 2
-    html += '<select id="fl-l2" onchange="onFilterL2Change()" style="'+selectStyle()+'">';
-
-    if (FILTER.level1 === 'SEASON') {
-      html += `<option value="alltime"${FILTER.level2==='alltime'?' selected':''}>All Time</option>`;
-      years.forEach(y => {
-        html += `<option value="year_${y}"${FILTER.level2==='year_'+y?' selected':''}>${y}</option>`;
-      });
-      quarters.forEach(q => {
-        html += `<option value="${q.key}"${FILTER.level2===q.key?' selected':''}>${q.label}</option>`;
-      });
-    }
-    else if (FILTER.level1 === 'MONTH') {
-      months.forEach(m => {
-        html += `<option value="${m.key}"${FILTER.level2===m.key?' selected':''}>${m.label}</option>`;
-      });
-    }
-    else if (FILTER.level1 === 'WEEK') {
-      html += `<option value="thisweek"${FILTER.level2==='thisweek'?' selected':''}>This Week</option>`;
-      html += `<option value="lastweek"${FILTER.level2==='lastweek'?' selected':''}>Last Week</option>`;
-      html += `<option value="last14"${FILTER.level2==='last14'?' selected':''}>Last 14 Days</option>`;
-      weeks.forEach(w => {
-        html += `<option value="${w.key}"${FILTER.level2===w.key?' selected':''}>${w.label}</option>`;
-      });
-    }
-    else if (FILTER.level1 === 'DAY') {
-      html += `<option value="yesterday"${FILTER.level2==='yesterday'?' selected':''}>Yesterday</option>`;
-      html += `<option value="twodays"${FILTER.level2==='twodays'?' selected':''}>2 Days Ago</option>`;
-      html += `<option value="threedays"${FILTER.level2==='threedays'?' selected':''}>3 Days Ago</option>`;
-      html += `<option value="fourdays"${FILTER.level2==='fourdays'?' selected':''}>4 Days Ago</option>`;
-      html += `<option value="specific"${FILTER.level2==='specific'?' selected':''}>Specific Date...</option>`;
-    }
-    html += '</select>';
-
-    // Level 3 — only for SEASON>year or DAY>specific
-    if ((FILTER.level1==='SEASON' && FILTER.level2 && FILTER.level2.startsWith('year_')) ||
-        (FILTER.level1==='DAY' && FILTER.level2==='specific')) {
-      html += '<select id="fl-l3" onchange="onFilterL3Change()" style="'+selectStyle()+'">';
-      if (FILTER.level1==='SEASON') {
-        years.forEach(y => {
-          html += `<option value="${y}"${FILTER.level3===y?' selected':''}>${y}</option>`;
-        });
-      } else {
-        dates.slice(0,30).forEach(d => {
-          const label = new Date(d+'T12:00:00').toLocaleDateString('en-US',
-            {weekday:'short',month:'short',day:'numeric'});
-          html += `<option value="${d}"${FILTER.level3===d?' selected':''}>${label}</option>`;
-        });
-      }
-      html += '</select>';
-    }
-
-    // Period label
-    html += '<span id="filter-period-label" style="font-size:11px;color:var(--text3);margin-left:4px;">'
-          + getFilterLabel() + '</span>';
-
-    html += '</div>';
-    container.innerHTML = html;
-  }
-
-  render();
-  window._filterUIRender = render;
-}
-
-function selectStyle() {
-  return 'background:var(--panel3);border:1px solid var(--border);border-radius:8px;'+
-         'padding:6px 10px;color:var(--text);font-size:12px;font-weight:600;'+
-         'outline:none;cursor:pointer;';
-}
-
-function getFilterLabel() {
-  const f = FILTER;
-  if (f.level1==='DAY') {
-    if (f.level2==='yesterday')  return 'Yesterday';
-    if (f.level2==='twodays')    return '2 Days Ago';
-    if (f.level2==='threedays')  return '3 Days Ago';
-    if (f.level2==='fourdays')   return '4 Days Ago';
-    if (f.level2==='specific' && f.level3) {
-      return new Date(f.level3+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-    }
-  }
-  if (f.level1==='WEEK') {
-    if (f.level2==='thisweek') return 'This Week';
-    if (f.level2==='lastweek') return 'Last Week';
-    if (f.level2==='last14')   return 'Last 14 Days';
-    const wk = getWeekRanges().find(w=>w.key===f.level2);
-    if (wk) return wk.label;
-  }
-  if (f.level1==='MONTH') {
-    const m = getAvailableMonths().find(m=>m.key===f.level2);
-    if (m) return m.label;
-  }
-  if (f.level1==='SEASON') {
-    if (f.level2==='alltime') return 'All Time';
-    if (f.level2 && f.level2.startsWith('year_')) return f.level3 || f.level2.replace('year_','');
-    if (f.level2) return f.level2;
-  }
-  return '';
-}
-
-function onFilterL1Change() {
-  const v = document.getElementById('fl-l1').value;
-  FILTER.level1 = v;
-  FILTER.level3 = null;
-  // Set sensible defaults for level2
-  if (v==='DAY')    FILTER.level2 = 'yesterday';
-  if (v==='WEEK')   FILTER.level2 = 'thisweek';
-  if (v==='MONTH')  FILTER.level2 = getAvailableMonths()[0]?.key || '';
-  if (v==='SEASON') FILTER.level2 = 'alltime';
-  if (window._filterUIRender) window._filterUIRender();
-  refreshAllViews();
-}
-
-function onFilterL2Change() {
-  const v = document.getElementById('fl-l2').value;
-  FILTER.level2 = v;
-  FILTER.level3 = null;
-  if (v==='year_'+v.replace('year_','')) {
-    // set level3 to the year
-    FILTER.level3 = v.replace('year_','');
-  }
-  if (window._filterUIRender) window._filterUIRender();
-  refreshAllViews();
-}
-
-function onFilterL3Change() {
-  const el = document.getElementById('fl-l3');
-  if (el) FILTER.level3 = el.value;
-  if (window._filterUIRender) window._filterUIRender();
-  refreshAllViews();
-}
-
-// Keep backward compat
-function setPeriod(period, el) {
-  if (period==='daily')   { FILTER.level1='DAY';   FILTER.level2='yesterday'; }
-  if (period==='weekly')  { FILTER.level1='WEEK';  FILTER.level2='thisweek'; }
-  if (period==='monthly') { FILTER.level1='MONTH'; FILTER.level2=getAvailableMonths()[0]?.key||''; }
-  document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));
-  if(el) el.classList.add('active');
-  if (window._filterUIRender) window._filterUIRender();
-  refreshAllViews();
 }
 
 document.addEventListener('DOMContentLoaded',()=>{
