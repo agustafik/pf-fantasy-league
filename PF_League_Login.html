@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PF Fantasy League — Register / Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:    #002244;
+  --navy2:   #001830;
+  --panel:   #0A1F38;
+  --panel2:  #0D2744;
+  --border:  rgba(165,172,175,0.15);
+  --border2: rgba(165,172,175,0.25);
+  --text:    #d8dfe3;
+  --text2:   #A5ACAF;
+  --green:   #69BE28;
+  --green2:  #7fd636;
+  --blue:    #334466;
+  --green-dim:rgba(105,190,40,0.15);
+  --red:     #d94040;
+  --red-lt:  rgba(217,64,64,0.12);
+  --green-ok:#66BB6A;
+  --green-lt:rgba(105,190,40,0.12);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--navy2);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 16px 48px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Background texture */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(105,190,40,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 30% at 90% 80%, rgba(0,34,68,0.3) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.page-wrap { position: relative; z-index: 1; width: 100%; max-width: 520px; padding-top: 40px; }
+
+/* ── HEADER ── */
+.header { text-align: center; margin-bottom: 32px; }
+.header-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(105,190,40,0.1); border: 1px solid rgba(105,190,40,0.25);
+  border-radius: 20px; padding: 5px 16px; margin-bottom: 16px;
+  font-size: 11px; font-weight: 600; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--green);
+}
+.header-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--green); }
+.header-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 42px; font-weight: 900; letter-spacing: 2px;
+  color: var(--text); line-height: 1; text-transform: uppercase;
+}
+.header-title span { color: var(--green); }
+.header-sub { font-size: 14px; color: var(--text2); margin-top: 8px; }
+
+/* ── CARD ── */
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+}
+
+/* ── TABS ── */
+.tabs { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--border); }
+.tab {
+  padding: 16px; text-align: center; cursor: pointer;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 16px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text2); transition: all 0.2s; position: relative;
+  border-bottom: 3px solid transparent;
+}
+.tab:hover { color: var(--text); background: rgba(255,255,255,0.02); }
+.tab.active { color: var(--green); border-bottom-color: var(--green); background: rgba(105,190,40,0.04); }
+
+/* ── FORM BODY ── */
+.form-body { padding: 28px 32px 32px; }
+.form-section-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 11px; font-weight: 700; letter-spacing: 2.5px;
+  text-transform: uppercase; color: var(--text2);
+  margin: 20px 0 12px; padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+}
+.form-section-title:first-child { margin-top: 0; }
+.form-section-title .dot {
+  width: 5px; height: 5px; border-radius: 50%; background: var(--green); flex-shrink: 0;
+}
+
+.field-row { display: grid; gap: 12px; margin-bottom: 12px; }
+.field-row.cols-2 { grid-template-columns: 1fr 1fr; }
+.field-row.cols-1 { grid-template-columns: 1fr; }
+
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.8px;
+  text-transform: uppercase; color: var(--text2);
+}
+.field label .req { color: var(--green); margin-left: 2px; }
+.field label .opt { color: var(--text2); font-weight: 400; font-style: italic; letter-spacing: 0; text-transform: none; font-size: 11px; }
+
+.field input, .field select {
+  background: var(--navy2);
+  border: 1px solid var(--border2);
+  border-radius: 9px;
+  padding: 10px 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  width: 100%;
+  -webkit-appearance: none;
+}
+.field select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236D8FAA' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+  cursor: pointer;
+}
+.field select option { background: var(--panel); color: var(--text); }
+.field input::placeholder { color: var(--text2); opacity: 0.6; }
+.field input:focus, .field select:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(105,190,40,0.15);
+}
+.field input.error { border-color: var(--red); box-shadow: 0 0 0 3px var(--red-lt); }
+.field input.valid { border-color: var(--green); }
+
+.field-hint { font-size: 11px; color: var(--text2); margin-top: 3px; }
+.field-error { font-size: 11px; color: var(--red); margin-top: 3px; display: none; }
+.field-error.show { display: block; }
+
+/* Password strength */
+.pw-strength { margin-top: 6px; }
+.pw-bars { display: flex; gap: 3px; margin-bottom: 4px; }
+.pw-bar { height: 3px; flex: 1; border-radius: 2px; background: var(--border2); transition: background 0.2s; }
+.pw-bar.weak  { background: var(--red); }
+.pw-bar.fair  { background: var(--green); }
+.pw-bar.good  { background: #42A5F5; }
+.pw-bar.strong{ background: var(--green); }
+.pw-label { font-size: 11px; color: var(--text2); }
+
+/* Team name checker */
+.team-check { margin-top: 5px; font-size: 12px; display: none; }
+.team-check.show { display: flex; align-items: center; gap: 5px; }
+.team-check.ok   { color: var(--green); }
+.team-check.bad  { color: var(--red); }
+
+/* Submit button */
+.btn-submit {
+  width: 100%; margin-top: 24px;
+  background: var(--green);
+  border: none; border-radius: 10px;
+  padding: 14px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 18px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--navy); cursor: pointer;
+  transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-submit:hover { background: var(--green2); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(249,168,37,0.3); }
+.btn-submit:active { transform: translateY(0); }
+.btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.btn-login {
+  width: 100%; margin-top: 24px;
+  background: var(--panel3);
+  border: none; border-radius: 10px;
+  padding: 14px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 18px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
+  color: white; cursor: pointer;
+  transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-login:hover { background: var(--green-dim); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(30,136,229,0.3); }
+.btn-login:active { transform: translateY(0); }
+
+/* Alert box */
+.alert {
+  padding: 12px 16px; border-radius: 10px; font-size: 13px;
+  margin-bottom: 16px; display: none; align-items: flex-start; gap: 10px;
+}
+.alert.show { display: flex; }
+.alert.error   { background: var(--red-lt);   border: 1px solid rgba(239,83,80,0.25);   color: #EF9A9A; }
+.alert.success { background: var(--green-lt); border: 1px solid rgba(102,187,106,0.25); color: #A5D6A7; }
+.alert.info    { background: var(--blue-lt);  border: 1px solid rgba(30,136,229,0.25);  color: #90CAF9; }
+.alert-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+/* Success screen */
+.success-screen {
+  padding: 48px 32px; text-align: center; display: none;
+}
+.success-screen.show { display: block; }
+.success-icon {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: var(--green-lt); border: 2px solid var(--green);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px; margin: 0 auto 20px;
+}
+.success-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 28px; font-weight: 800; color: var(--green); margin-bottom: 8px;
+}
+.success-sub { font-size: 14px; color: var(--text2); line-height: 1.6; }
+.success-data {
+  margin: 20px 0; background: var(--navy2); border-radius: 10px;
+  padding: 16px; text-align: left;
+}
+.success-row { display: flex; justify-content: space-between; padding: 5px 0;
+  border-bottom: 1px solid var(--border); font-size: 13px; }
+.success-row:last-child { border-bottom: none; }
+.success-row .key { color: var(--text2); }
+.success-row .val { font-weight: 600; color: var(--text); }
+.btn-copy {
+  background: var(--panel2); border: 1px solid var(--border2);
+  border-radius: 8px; padding: 10px 20px; color: var(--text);
+  font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 16px;
+  transition: all 0.15s; width: 100%;
+}
+.btn-copy:hover { background: var(--blue-lt); border-color: var(--green); color: #90CAF9; }
+
+/* Footer note */
+.footer-note {
+  text-align: center; margin-top: 20px;
+  font-size: 12px; color: var(--text2); line-height: 1.5;
+}
+.footer-note a { color: var(--green); text-decoration: none; }
+
+/* Spinner */
+.spinner {
+  width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.2);
+  border-top-color: var(--navy); border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Google Sheets setup banner */
+.setup-banner {
+  background: rgba(249,168,37,0.08); border: 1px solid rgba(249,168,37,0.2);
+  border-radius: 12px; padding: 14px 18px; margin-bottom: 20px;
+  font-size: 12px; color: #FFCC80; line-height: 1.6;
+  display: none;
+}
+.setup-banner.show { display: block; }
+.setup-banner strong { color: var(--green); }
+.setup-banner code {
+  background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px;
+  font-family: monospace; font-size: 11px;
+}
+
+@media (max-width: 540px) {
+  .page-wrap { padding-top: 24px; }
+  .form-body { padding: 20px; }
+  .field-row.cols-2 { grid-template-columns: 1fr; }
+  .header-title { font-size: 32px; }
+}
+</style>
+</head>
+<body>
+
+<div class="page-wrap">
+
+  <div class="header">
+    <div class="header-badge">Platform Funding</div>
+    <div class="header-title">PF <span>Fantasy</span> League</div>
+    <div class="header-sub">Register to join the league or sign in to view your stats.</div>
+  </div>
+
+  <!-- Google Sheets setup notice — shown when SHEET_URL is not configured -->
+  
+
+  <div class="card">
+    <div class="tabs">
+      <div class="tab active" id="tab-register" onclick="switchTab('register')">Register</div>
+      <div class="tab"        id="tab-login"    onclick="switchTab('login')">Login</div>
+    </div>
+
+    <!-- ══════════════ REGISTER FORM ══════════════ -->
+    <div id="panel-register">
+      <div class="form-body">
+
+        <div class="alert" id="reg-alert">
+          <span class="alert-icon">!</span>
+          <span id="reg-alert-msg"></span>
+        </div>
+
+        <!-- Personal Info -->
+        <div class="form-section-title"><span class="dot"></span>Personal Info</div>
+
+        <div class="field-row cols-1">
+          <div class="field">
+            <label>Full Name <span class="req">*</span></label>
+            <input type="text" id="reg-fullname" placeholder="First and Last Name" autocomplete="name">
+            <div class="field-error" id="err-fullname">Please enter your full name.</div>
+          </div>
+        </div>
+
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Date of Birth <span class="req">*</span></label>
+            <input type="date" id="reg-dob">
+            <div class="field-error" id="err-dob">Required.</div>
+          </div>
+          <div class="field">
+            <label>Office <span class="req">*</span></label>
+            <select id="reg-office">
+              <option value="">Select office…</option>
+              <option value="BLO">BLO — Buffalo</option>
+              <option value="CA">CA — California</option>
+              <option value="FL">FL — Florida</option>
+            </select>
+            <div class="field-error" id="err-office">Please select your office.</div>
+          </div>
+        </div>
+
+        <!-- Contact -->
+        <div class="form-section-title"><span class="dot"></span>Contact & Work Info</div>
+
+        <div class="field-row cols-1">
+          <div class="field">
+            <label>Work Email <span class="req">*</span></label>
+            <input type="email" id="reg-email" placeholder="you@platformfunding.com" autocomplete="email">
+            <div class="field-error" id="err-email">Please enter a valid work email.</div>
+          </div>
+        </div>
+
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Work Phone <span class="req">*</span></label>
+            <input type="tel" id="reg-workphone" placeholder="(000) 000-0000">
+            <div class="field-error" id="err-workphone">Required.</div>
+          </div>
+          <div class="field">
+            <label>Cell Phone <span class="req">*</span></label>
+            <input type="tel" id="reg-cellphone" placeholder="(000) 000-0000">
+            <div class="field-error" id="err-cellphone">Required.</div>
+          </div>
+        </div>
+
+        <div class="field-row cols-1">
+          <div class="field">
+            <label>Salesforce Short Name <span class="opt">(optional — if you know it)</span></label>
+            <input type="text" id="reg-sfname" placeholder="e.g. jsmith" autocomplete="off">
+            <div class="field-hint">Your login name in Salesforce, if you use it.</div>
+          </div>
+        </div>
+
+        <!-- League Identity -->
+        <div class="form-section-title"><span class="dot"></span>League Identity</div>
+
+        <div class="field-row cols-1">
+          <div class="field">
+            <label>Team Name <span class="req">*</span></label>
+            <input type="text" id="reg-teamname" placeholder="Pick something fun…" maxlength="30" oninput="checkTeamName(this.value)">
+            <div class="team-check" id="team-check"></div>
+            <div class="field-error" id="err-teamname">Team name required (no profanity).</div>
+          </div>
+        </div>
+
+        <div class="field-row cols-2">
+          <div class="field">
+            <label>Username <span class="req">*</span></label>
+            <input type="text" id="reg-username" placeholder="no spaces" maxlength="20" autocomplete="username" oninput="this.value=this.value.replace(/\s/g,'')">
+            <div class="field-error" id="err-username">Username required.</div>
+          </div>
+          <div class="field">
+            <label>Password <span class="req">*</span></label>
+            <input type="password" id="reg-password" placeholder="min 8 characters" autocomplete="new-password" oninput="checkPwStrength(this.value)">
+            <div class="pw-strength" id="pw-strength" style="display:none">
+              <div class="pw-bars">
+                <div class="pw-bar" id="pwb1"></div>
+                <div class="pw-bar" id="pwb2"></div>
+                <div class="pw-bar" id="pwb3"></div>
+                <div class="pw-bar" id="pwb4"></div>
+              </div>
+              <div class="pw-label" id="pw-label">Too short</div>
+            </div>
+            <div class="field-error" id="err-password">Min 8 characters required.</div>
+          </div>
+        </div>
+
+        <button class="btn-submit" id="btn-register" onclick="submitRegistration()">
+          <span id="reg-btn-text">Join the League</span>
+          <div class="spinner" id="reg-spinner" style="display:none"></div>
+        </button>
+
+        <div class="footer-note" style="margin-top:16px;margin-bottom:0">
+          Already have an account? <a href="#" onclick="switchTab('login');return false;">Sign in here</a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════════════ LOGIN FORM ══════════════ -->
+    <div id="panel-login" style="display:none">
+      <div class="form-body">
+
+        <div class="alert" id="login-alert">
+          <span class="alert-icon">!</span>
+          <span id="login-alert-msg"></span>
+        </div>
+
+        <div class="form-section-title"><span class="dot"></span>Sign In</div>
+
+        <div class="field-row cols-1">
+          <div class="field">
+            <label>Username or Work Email <span class="req">*</span></label>
+            <input type="text" id="login-user" placeholder="Username or email" autocomplete="username">
+          </div>
+        </div>
+
+        <div class="field-row cols-1">
+          <div class="field">
+            <label>Password <span class="req">*</span></label>
+            <input type="password" id="login-pass" placeholder="Your password" autocomplete="current-password"
+              onkeydown="if(event.key==='Enter')submitLogin()">
+          </div>
+        </div>
+
+        <button class="btn-login" onclick="submitLogin()">
+          <span id="login-btn-text">Sign In</span>
+          <div class="spinner" id="login-spinner" style="display:none; border-top-color:white"></div>
+        </button>
+
+        <div class="footer-note" style="margin-top:16px;margin-bottom:0">
+          New here? <a href="#" onclick="switchTab('register');return false;">Create your account</a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════════════ SUCCESS SCREEN ══════════════ -->
+    <div class="success-screen" id="success-screen">
+      <div class="success-icon">✓</div>
+      <div class="success-title">You're In!</div>
+      <div class="success-sub">Registration submitted. You'll be added to the roster and notified when your account is active.</div>
+      <div class="success-data" id="success-data"></div>
+      
+    </div>
+
+  </div><!-- /card -->
+
+  </div><!-- /page-wrap -->
+
+<script>
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbxta8Ts-JfzQWXNNMoQq-bCjjGtAhnx_D3iipwPR7zxBIPnF9TQZ2kDyiLxBgrQpUwQxw/exec';
+
+const BANNED_WORDS = ['fuck','shit','ass','bitch','cunt','dick','cock','pussy','bastard','whore','slut','faggot','nigger','retard','crap','damn'];
+
+function switchTab(tab) {
+  document.getElementById('panel-register').style.display = tab==='register' ? 'block' : 'none';
+  document.getElementById('panel-login').style.display    = tab==='login'    ? 'block' : 'none';
+  document.getElementById('success-screen').style.display = 'none';
+  document.getElementById('tab-register').classList.toggle('active', tab==='register');
+  document.getElementById('tab-login').classList.toggle('active', tab==='login');
+  clearAlerts();
+}
+
+function clearAlerts() {
+  ['reg-alert','login-alert'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.className = 'alert'; }
+  });
+  document.querySelectorAll('.field-error').forEach(e => e.classList.remove('show'));
+  document.querySelectorAll('input').forEach(e => e.classList.remove('error','valid'));
+}
+
+function showAlert(id, msg, type='error') {
+  const el = document.getElementById(id);
+  el.className = 'alert ' + type + ' show';
+  document.getElementById(id+'-msg').textContent = msg;
+}
+
+function checkTeamName(val) {
+  const el = document.getElementById('team-check');
+  if (!val.trim()) { el.className = 'team-check'; return; }
+  const lower = val.toLowerCase();
+  const hasBanned = BANNED_WORDS.some(w => lower.includes(w));
+  if (hasBanned) {
+    el.className = 'team-check show bad';
+    el.textContent = '✗ Please choose an appropriate team name';
+  } else {
+    el.className = 'team-check show ok';
+    el.textContent = '✓ Looks good';
+  }
+}
+
+function checkPwStrength(val) {
+  const wrap = document.getElementById('pw-strength');
+  const label = document.getElementById('pw-label');
+  const bars = [1,2,3,4].map(i => document.getElementById('pwb'+i));
+  if (!val) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  let score = 0;
+  if (val.length >= 8) score++;
+  if (val.length >= 12) score++;
+  if (/[A-Z]/.test(val) && /[0-9]/.test(val)) score++;
+  if (/[^A-Za-z0-9]/.test(val)) score++;
+  const levels = ['','weak','fair','good','strong'];
+  const labels = ['','Weak','Fair','Good','Strong'];
+  bars.forEach((b, i) => { b.className = 'pw-bar ' + (i < score ? levels[score] : ''); });
+  label.textContent = labels[score] || 'Too short';
+  label.style.color = score<=1?'#EF5350':score===2?'#F9A825':score===3?'#42A5F5':'#66BB6A';
+}
+
+function simpleHash(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const c = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + c;
+    hash |= 0;
+  }
+  return 'h' + Math.abs(hash).toString(16);
+}
+
+function formatPhone(val) {
+  const digits = val.replace(/\D/g,'');
+  if (digits.length === 10) return `(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`;
+  return val;
+}
+
+function validateRegistration() {
+  let ok = true;
+  const checks = [
+    ['reg-fullname',  v => v.trim().split(' ').length >= 2, 'err-fullname'],
+    ['reg-dob',       v => !!v, 'err-dob'],
+    ['reg-office',    v => !!v, 'err-office'],
+    ['reg-email',     v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), 'err-email'],
+    ['reg-workphone', v => v.replace(/\D/g,'').length >= 10, 'err-workphone'],
+    ['reg-cellphone', v => v.replace(/\D/g,'').length >= 10, 'err-cellphone'],
+    ['reg-username',  v => v.trim().length >= 3, 'err-username'],
+    ['reg-password',  v => v.length >= 8, 'err-password'],
+  ];
+  checks.forEach(([fieldId, test, errId]) => {
+    const input = document.getElementById(fieldId);
+    const val = input.value;
+    if (!test(val)) {
+      input.classList.add('error');
+      document.getElementById(errId).classList.add('show');
+      ok = false;
+    } else {
+      input.classList.remove('error');
+      input.classList.add('valid');
+      document.getElementById(errId).classList.remove('show');
+    }
+  });
+  // Team name check
+  const tn = document.getElementById('reg-teamname').value;
+  if (!tn.trim()) {
+    document.getElementById('reg-teamname').classList.add('error');
+    document.getElementById('err-teamname').classList.add('show');
+    ok = false;
+  } else {
+    const lower = tn.toLowerCase();
+    if (BANNED_WORDS.some(w => lower.includes(w))) {
+      document.getElementById('reg-teamname').classList.add('error');
+      document.getElementById('err-teamname').textContent = 'Please choose an appropriate team name.';
+      document.getElementById('err-teamname').classList.add('show');
+      ok = false;
+    }
+  }
+  return ok;
+}
+
+function setLoading(loading) {
+  document.getElementById('btn-register').disabled = loading;
+  document.getElementById('reg-btn-text').style.display = loading ? 'none' : 'inline';
+  document.getElementById('reg-spinner').style.display  = loading ? 'inline-block' : 'none';
+}
+
+async function submitRegistration() {
+  clearAlerts();
+  if (!validateRegistration()) {
+    showAlert('reg-alert', 'Please fix the errors above before submitting.');
+    return;
+  }
+
+  const payload = {
+    action:    'add_agent',
+    PF_ID:     '',
+    NAME:      document.getElementById('reg-fullname').value.trim(),
+    OFFICE:    document.getElementById('reg-office').value,
+    ROLE:      'agent',
+    SF_ID:     '',
+    LV_ID:     '',
+    STATUS:    'Pending',
+    EMAIL:     document.getElementById('reg-email').value.trim().toLowerCase(),
+    PHONE:     formatPhone(document.getElementById('reg-workphone').value),
+    DOB:       document.getElementById('reg-dob').value,
+    HIRE_DATE: '',
+    TEAM_NAME: document.getElementById('reg-teamname').value.trim(),
+    USERNAME:  document.getElementById('reg-username').value.trim(),
+    passwordHash: simpleHash(document.getElementById('reg-password').value),
+  };
+
+  if (SHEET_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL') {
+    // Demo mode — show success without posting
+    showSuccessScreen(payload);
+    return;
+  }
+
+  setLoading(true);
+  try {
+    const res = await fetch(SHEET_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (data.success) {
+      showSuccessScreen(payload);
+    } else {
+      showAlert('reg-alert', data.error || 'Something went wrong. Please try again.');
+    }
+  } catch(e) {
+    showAlert('reg-alert', 'Could not reach the server. Check your connection and try again.');
+  } finally {
+    setLoading(false);
+  }
+}
+
+function showSuccessScreen(payload) {
+  document.getElementById('panel-register').style.display = 'none';
+  const screen = document.getElementById('success-screen');
+  screen.style.display = 'block';
+  document.getElementById('success-data').innerHTML = [
+    ['Name',      payload.NAME],
+    ['Office',    payload.OFFICE],
+    ['Team Name', payload.TEAM_NAME],
+    ['Username',  payload.USERNAME],
+    ['Email',     payload.EMAIL],
+    ['Status',    'Pending — admin will activate your account'],
+  ].map(([k,v]) => `<div class="success-row"><span class="key">${k}</span><span class="val">${v}</span></div>`).join('');
+  window._lastPayload = payload;
+}
+
+async function submitLogin() {
+  clearAlerts();
+  const identifier = document.getElementById('login-user').value.trim();
+  const password   = document.getElementById('login-pass').value;
+  if (!identifier || !password) {
+    showAlert('login-alert', 'Please enter your username/email and password.');
+    return;
+  }
+  const btnText = document.getElementById('login-btn-text');
+  const spinner = document.getElementById('login-spinner');
+  btnText.style.display = 'none'; spinner.style.display = 'inline-block';
+
+  const payload = { action:'login', identifier, passwordHash: simpleHash(password) };
+
+  if (SHEET_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL') {
+    setTimeout(() => {
+      btnText.style.display = 'inline'; spinner.style.display = 'none';
+      showAlert('login-alert', 'Demo mode: Connect Google Sheets to enable real login. See setup instructions below.', 'info');
+    }, 800);
+    return;
+  }
+
+  try {
+    const res = await fetch(SHEET_URL, { method:'POST', body: JSON.stringify(payload) });
+    const data = await res.json();
+    if (data.success) {
+      showAlert('login-alert', `Welcome back! Redirecting to dashboard…`, 'success');
+      setTimeout(() => { window.location.href = 'https://agustafik.github.io/pf-fantasy-league/PF_Fantasy_Dashboard_v3.html'; }, 1500);
+    } else {
+      showAlert('login-alert', data.error || 'Login failed.');
+    }
+  } catch(e) {
+    showAlert('login-alert', 'Could not reach server. Try again.');
+  } finally {
+    btnText.style.display = 'inline'; spinner.style.display = 'none';
+  }
+}
+
+</script>
+</body>
+</html>
