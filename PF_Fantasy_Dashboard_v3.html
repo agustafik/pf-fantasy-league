@@ -2695,7 +2695,7 @@ function renderStatLeaders(){
     {key:'subs',   label:'Top SUBS'},
     {key:'offers', label:'Top OFFERS'},
     {key:'units',  label:'Top NEW UNITS'},
-    {key:'talkMph',label:'Top TALK MINS/HR'},
+    {key:'talk',   label:'Top TALK MINS/HR'},
     {key:'initial',label:'Top INITIAL APPs'},
     {key:'pts',    label:'Top Points'},
   ];
@@ -2917,7 +2917,7 @@ function loadPts(){
 function savePts(p){try{localStorage.setItem('pf_point_values',JSON.stringify(p));}catch(e){}}
 function calcAgentPts(ag,pts){
   if(!pts) pts=loadPts();
-  return (ag.initial||0)*pts.initial+(ag.subs||0)*pts.subs+(ag.offers||0)*pts.offers+(ag.units||0)*pts.units+(ag.talk||0)*pts.talk;
+  return Math.round((ag.initial||0)*pts.initial+(ag.subs||0)*pts.subs+(ag.offers||0)*pts.offers+(ag.units||0)*pts.units+(ag.talk||0)*pts.talk);
 }
 let PTS=loadPts();
 
