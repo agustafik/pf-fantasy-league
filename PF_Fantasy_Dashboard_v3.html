@@ -916,6 +916,58 @@ body.role-manager .manager-up { display:block; }
   .main-content { padding:16px; }
   .stat-grid { grid-template-columns:repeat(2,1fr); }
 }
+
+/* ── DATE FILTER COMPONENT ── */
+.df-wrap { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.df-btn {
+  display:flex; align-items:center; gap:6px;
+  background:var(--panel3); border:1px solid var(--border);
+  border-radius:8px; padding:6px 12px; cursor:pointer;
+  font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:600;
+  color:var(--text); transition:all 0.15s; white-space:nowrap;
+  position:relative; user-select:none;
+}
+.df-btn:hover { border-color:var(--green); color:var(--green); }
+.df-btn.active { background:var(--green-dim); border-color:var(--green); color:var(--green); }
+.df-btn .df-arrow { font-size:9px; margin-left:2px; transition:transform 0.2s; }
+.df-btn.open .df-arrow { transform:rotate(180deg); }
+.df-label { font-size:11px; color:var(--text3); white-space:nowrap; }
+
+.df-dropdown {
+  position:absolute; top:calc(100% + 6px); right:0; z-index:999;
+  background:var(--panel2); border:1px solid var(--border-g);
+  border-radius:10px; padding:8px 0; min-width:200px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.5);
+  max-height:280px; overflow-y:auto;
+}
+.df-dropdown-item {
+  display:flex; align-items:center; gap:10px;
+  padding:8px 14px; cursor:pointer; font-size:13px; color:var(--text);
+  transition:background 0.1s;
+}
+.df-dropdown-item:hover { background:rgba(105,190,40,0.08); }
+.df-dropdown-item input[type=checkbox] {
+  width:15px; height:15px; accent-color:var(--green);
+  cursor:pointer; flex-shrink:0;
+}
+.df-dropdown-item.apply-row {
+  border-top:1px solid var(--border); margin-top:4px;
+  padding-top:10px; justify-content:center;
+}
+.df-apply-btn {
+  background:var(--green); color:var(--navy2);
+  border:none; border-radius:6px; padding:6px 20px;
+  font-family:'Rajdhani',sans-serif; font-size:13px;
+  font-weight:700; cursor:pointer; letter-spacing:0.5px;
+}
+.df-apply-btn:hover { background:var(--green2); }
+.df-specific-input {
+  width:100%; background:var(--panel3); border:1px solid var(--border);
+  border-radius:6px; padding:6px 10px; color:var(--text);
+  font-size:13px; outline:none; margin:4px 14px;
+  width:calc(100% - 28px);
+}
+
 </style>
 </head>
 <body class="role-admin">
@@ -1038,191 +1090,9 @@ body.role-manager .manager-up { display:block; }
 
   <!-- My stats this week (agent view) / league snapshot (admin) -->
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
-  <div class="section-title" style="margin-bottom:0;flex:1;"><span class="st-accent">◆</span> League Snapshot — <span id="hs-period-label">May 2026</span></div>
-  <div style="display:flex;gap:6px;">
-    <div class="week-btn period-btn" onclick="setPeriod('daily',this)">Today</div>
-    <div class="week-btn period-btn" onclick="setPeriod('weekly',this)">This Week</div>
-    <div class="week-btn period-btn active" onclick="setPeriod('monthly',this)">Month</div>
-  </div>
-</div>
-  <div class="stat-grid" id="home-stat-grid">
-    <div class="stat-card accent">
-      <div class="stat-card-label">Total SUBS</div>
-      <div class="stat-card-value green" id="hs-subs">248</div>
-      <div class="stat-card-sub">All agents · <span id="hs-period-label-sub">May 2026</span></div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-label">Total Offers</div>
-      <div class="stat-card-value" id="hs-offers">179</div>
-      <div class="stat-card-sub">Across all offices</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-label">New Units</div>
-      <div class="stat-card-value" id="hs-units">28</div>
-      <div class="stat-card-sub">May 2026</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-label">Avg Talk Mins/Hr</div>
-      <div class="stat-card-value" id="hs-talk">11.1</div>
-      <div class="stat-card-sub">League average</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-label">Active Agents</div>
-      <div class="stat-card-value" id="hs-active">42</div>
-      <div class="stat-card-sub">3 offices</div>
-    </div>
-  </div>
-
-  <!-- Active contest-- Active contest quick view -->
-  <div class="section-title"><span class="st-accent">◆</span> Active Contests</div>
-  <div class="grid-2">
-    <div class="contest-card" onclick="switchTab('matchups')">
-      <div class="contest-card-header">
-        <div>
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-            <span class="contest-type-badge weekly">Weekly</span>
-            <span class="matchup-status live">Live</span>
-          </div>
-          <div class="contest-name">Week 1 — Office Matchup</div>
-          <div class="contest-meta">BLO vs CA vs FL · Apr 28–May 2</div>
-        </div>
-        <div style="text-align:right">
-          <div class="pts-val">BLO</div>
-          <div style="font-size:11px;color:var(--text3)">Currently leading</div>
-        </div>
-      </div>
-      <div class="contest-body" style="display:flex;justify-content:space-between;align-items:center;">
-        <span style="font-size:12px;color:var(--text3)">Click to see full breakdown</span>
-        <span class="contest-expand">→</span>
-      </div>
-    </div>
-    <div class="contest-card" onclick="switchTab('contests')">
-      <div class="contest-card-header">
-        <div>
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
-            <span class="contest-type-badge daily">Daily</span>
-            <span class="matchup-status live">Live</span>
-          </div>
-          <div class="contest-name">Daily Sprint — SUBS Race</div>
-          <div class="contest-meta">Today only · Top 3 win</div>
-        </div>
-        <div style="text-align:right">
-          <div class="pts-val">4</div>
-          <div style="font-size:11px;color:var(--text3)">Leads today</div>
-        </div>
-      </div>
-      <div class="contest-body" style="display:flex;justify-content:space-between;align-items:center;">
-        <span style="font-size:12px;color:var(--text3)">Ben Stark leading</span>
-        <span class="contest-expand">→</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Office standings quick -->
-  <div class="section-title"><span class="st-accent">◆</span> Office Standings — Week 1</div>
-  <div class="office-strip">
-    <div class="office-card">
-      <div class="office-card-header blo">
-        <div>
-          <div class="office-card-name blo">BLO — Buffalo</div>
-          <div style="font-size:11px;color:var(--text3)">Anthony Giordano · 12 agents</div>
-        </div>
-        <div style="text-align:right">
-          <div class="office-pts-big">8,420</div>
-          <div style="font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;">pts</div>
-        </div>
-      </div>
-      <div class="office-stat-rows">
-        <div class="office-stat-row"><span class="office-stat-label">SUBS</span><span class="office-stat-val">62</span></div>
-        <div class="office-stat-row"><span class="office-stat-label">OFFERS</span><span class="office-stat-val">241</span></div>
-        <div class="office-stat-row"><span class="office-stat-label">NEW UNITS</span><span class="office-stat-val">11</span></div>
-        <div class="office-stat-row"><span class="office-stat-label">Top Agent</span><span style="font-size:12px;color:var(--blo);font-weight:600;" id="top-agent-BLO">—</span></div>
-      </div>
-    </div>
-    <div class="office-card">
-      <div class="office-card-header ca">
-        <div>
-          <div class="office-card-name ca">CA — California</div>
-          <div style="font-size:11px;color:var(--text3)">Jonathan McCoy · 12 agents</div>
-        </div>
-        <div style="text-align:right">
-          <div class="office-pts-big">7,180</div>
-          <div style="font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;">pts</div>
-        </div>
-      </div>
-      <div class="office-stat-rows">
-        <div class="office-stat-row"><span class="office-stat-label">SUBS</span><span class="office-stat-val">51</span></div>
-        <div class="office-stat-row"><span class="office-stat-label">OFFERS</span><span class="office-stat-val">198</span></div>
-        <div class="office-stat-row"><span class="office-stat-label">NEW UNITS</span><span class="office-stat-val">9</span></div>
-        <div class="office-stat-row"><span class="office-stat-label">Top Agent</span><span style="font-size:12px;color:var(--ca);font-weight:600;" id="top-agent-CA">—</span></div>
-      </div>
-    </div>
-    <div class="office-card">
-      <div class="office-card-header fl">
-        <div>
-          <div class="office-card-name fl">FL — Florida</div>
-          <div style="font-size:11px;color:var(--text3)">Josiah Emdin · 15 agents</div>
-        </div>
-        <div style="text-align:right">
-          <div class="office-pts-big">6,950</div>
-          <div style="font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;">pts</div>
-        </div>
-      </div>
-      <div class="office-stat-rows">
-        <div class="office-stat-row"><span class="office-stat-label">SUBS</span><span class="office-stat-val">48</span></div>
-        <div class="office-stat-row"><span class="office-stat-label">OFFERS</span><span class="office-stat-val">183</span></div>
-        <div class="office-stat-row"><span class="office-stat-label">NEW UNITS</span><span class="office-stat-val">8</span></div>
-        <div class="office-stat-row"><span class="office-stat-label">Top Agent</span><span style="font-size:12px;color:var(--fl);font-weight:600;" id="top-agent-FL">—</span></div>
-      </div>
-    </div>
-  </div>
-
-</div><!-- /view-home -->
-
-
-<!-- ══════════════════════════════════════
-     MATCHUPS TAB
-══════════════════════════════════════ -->
-<div class="view" id="view-matchups">
-
-  <div class="page-header">
-    <div class="page-header-left">
-      <div class="page-title">Matchups</div>
-      <div class="page-subtitle">Head-to-head results, office battles, and weekly scores</div>
-    </div>
-    <div class="page-actions">
-      <div class="last-updated"><div class="lu-dot"></div>Updated today, 9:00 AM</div>
-    </div>
-  </div>
-
-  <!-- Week selector -->
-  <div class="week-sel-bar">
-    <div class="week-btn active" onclick="selectWeek(1,this)">Week 1</div>
-    <div class="week-btn" onclick="selectWeek(2,this)">Week 2</div>
-    <div class="week-btn" onclick="selectWeek(3,this)">Week 3</div>
-    <div class="week-btn" onclick="selectWeek(4,this)">Week 4</div>
-    <div class="week-btn" onclick="selectWeek(5,this)">Week 5</div>
-    <div class="week-btn" onclick="selectWeek(6,this)">Week 6</div>
-    <div class="week-btn" onclick="selectWeek(7,this)">Week 7</div>
-    <div class="week-btn" onclick="selectWeek(8,this)">Week 8</div>
-  </div>
-
-  <!-- Subtab pills -->
-  <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
-    <div class="btn primary" id="matchup-sub-office" onclick="showMatchupSub('office')">Office vs Office</div>
-    <div class="btn" id="matchup-sub-1v1" onclick="showMatchupSub('1v1')">1v1 Matchups</div>
-    <div class="btn" id="matchup-sub-history" onclick="showMatchupSub('history')">W/L History</div>
-  </div>
-
-  <!-- Office vs Office -->
-  <div id="matchup-panel-office">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
   <div class="section-title" style="margin-bottom:0;flex:1;"><span class="st-accent">◆</span> Office Battle</div>
-  <div style="display:flex;gap:6px;">
-    <div class="week-btn period-btn" onclick="setPeriod('daily',this)">Today</div>
-    <div class="week-btn period-btn" onclick="setPeriod('weekly',this)">This Week</div>
-    <div class="week-btn period-btn active" onclick="setPeriod('monthly',this)">Month</div>
-  </div>
+  <div class="df-wrap" id="df-matchups"></div>
+</div>
 </div>
 
     <!-- BLO vs CA featured -->
@@ -1507,8 +1377,7 @@ body.role-manager .manager-up { display:block; }
 
   <!-- Leaderboard -->
   <div id="league-panel-lb">
-    <div class="week-sel-bar" style="margin-bottom:16px;">
-      <div class="week-btn active">Season</div>
+    <div style="margin-bottom:16px;"><div class="df-wrap" id="df-league"></div></div>
       <div class="week-btn" onclick="this.parentNode.querySelectorAll('.week-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">Week 1</div>
       <div class="week-btn" onclick="this.parentNode.querySelectorAll('.week-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">Month</div>
     </div>
@@ -2926,75 +2795,13 @@ let PTS=loadPts();
 // ══════════════════════════════════════════════════════════
 let CURRENT_PERIOD = 'monthly'; // default
 
-function getFilteredData(period) {
-  const today = new Date();
-  const todayStr = today.toISOString().slice(0,10);
-  // Get Monday of current week
-  const day = today.getDay();
-  const monday = new Date(today);
-  monday.setDate(today.getDate() - (day===0?6:day-1));
-  const mondayStr = monday.toISOString().slice(0,10);
-  // Get first of current month
-  const monthStr = today.getFullYear()+'-'+(String(today.getMonth()+1).padStart(2,'0'))+'-01';
 
-  let rows = DAILY_DATA;
-  if(period==='daily')   rows = DAILY_DATA.filter(r=>r.date===todayStr);
-  if(period==='weekly')  rows = DAILY_DATA.filter(r=>r.date>=mondayStr);
-  if(period==='monthly') rows = DAILY_DATA.filter(r=>r.date.slice(0,7)===today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0'));
 
-  // If no data for today/week yet, fall back to all available data
-  if(rows.length===0) rows = DAILY_DATA;
 
-  // Aggregate by agent
-  const map = {};
-  rows.forEach(r=>{
-    if(!map[r.pf_id]) map[r.pf_id] = {
-      pf_id:r.pf_id, name:r.name, office:r.office,
-      subs:0,offers:0,units:0,initial:0,talk_vals:[],days:0
-    };
-    const d=map[r.pf_id];
-    d.subs+=r.subs; d.offers+=r.offers; d.units+=r.units; d.initial+=r.initial;
-    if(r.talk>0) d.talk_vals.push(r.talk);
-    if(r.subs||r.offers||r.units||r.talk||r.initial) d.days++;
-  });
 
-  return Object.values(map).map(d=>{
-    const avg_talk = d.talk_vals.length ? +(d.talk_vals.reduce((a,b)=>a+b,0)/d.talk_vals.length).toFixed(2) : 0;
-    // Merge with REAL_STATS for full agent info
-    const full = REAL_STATS.find(a=>a.pf_id===d.pf_id)||{};
-    return {...full,...d,talk:avg_talk,pts:0};
-  }).map(a=>{a.pts=calcAgentPts(a,PTS);return a;});
-}
 
-function getOfficeFilteredTotals(period) {
-  const data = getFilteredData(period);
-  const tots = {BLO:{subs:0,offers:0,units:0,initial:0,talk_vals:[]},CA:{subs:0,offers:0,units:0,initial:0,talk_vals:[]},FL:{subs:0,offers:0,units:0,initial:0,talk_vals:[]}};
-  data.forEach(a=>{
-    const o=a.office; if(!tots[o]) return;
-    tots[o].subs+=a.subs||0; tots[o].offers+=a.offers||0;
-    tots[o].units+=a.units||0; tots[o].initial+=a.initial||0;
-    if(a.talk>0) tots[o].talk_vals.push(a.talk);
-  });
-  ['BLO','CA','FL'].forEach(o=>{
-    const t=tots[o];
-    t.talk = t.talk_vals.length ? +(t.talk_vals.reduce((a,b)=>a+b,0)/t.talk_vals.length).toFixed(2) : 0;
-    t.pts  = Math.round(t.initial*PTS.initial + t.subs*PTS.subs + t.offers*PTS.offers + t.units*PTS.units + t.talk*PTS.talk);
-  });
-  return tots;
-}
 
-function setPeriod(period, el) {
-  CURRENT_PERIOD = period;
-  document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));
-  if(el) el.classList.add('active');
-  refreshAllViews();
-}
 
-function refreshAllViews() {
-  renderLeaderboard();
-  updateHomeStats();
-  updateMatchupStats();
-}
 
 // ══════════════════════════════════════════════════════════
 // HOME STATS UPDATE
@@ -3257,7 +3064,11 @@ async function loadLiveData() {
     console.log(`✓ Loaded ${DAILY_DATA.length} rows through ${lastDate}`);
 
     hideLoadingScreen();
-    refreshAllViews();
+    // Init all filter UIs now that data is loaded
+    dfRenderUI('df-home');
+    dfRenderUI('df-matchups');
+    dfRenderUI('df-league');
+    dfRefreshAll();
 
     // Update last updated label
     const lu = document.querySelector('.last-updated');
@@ -3723,6 +3534,360 @@ function saveContest2Settings(){
   const msg=document.getElementById('c2-save-msg');
   if(msg){msg.style.display='block';setTimeout(()=>msg.style.display='none',3000);}
 }
+
+
+// ══════════════════════════════════════════════════════════════
+// SMART DATE FILTER SYSTEM
+// ══════════════════════════════════════════════════════════════
+
+// Filter state — what is currently selected
+let DF_TYPE     = 'DAY';    // DAY | WEEK | MONTH | SEASON
+let DF_SELECTED = ['yesterday']; // array of selected keys
+
+function dfGetAvailableDates() {
+  return [...new Set(DAILY_DATA.map(r=>r.date))].sort().reverse();
+}
+
+function dfGetAvailableMonths() {
+  const seen = {};
+  DAILY_DATA.forEach(r => { seen[r.date.slice(0,7)] = true; });
+  return Object.keys(seen).sort().reverse().map(m => {
+    const [y,mo] = m.split('-');
+    const name = ['January','February','March','April','May','June',
+                  'July','August','September','October','November','December'][parseInt(mo)-1];
+    return { key:m, label:name+' '+y };
+  });
+}
+
+function dfGetAvailableWeeks() {
+  const weeks = {};
+  DAILY_DATA.forEach(r => {
+    const dt  = new Date(r.date+'T12:00:00');
+    const day = dt.getDay();
+    const mon = new Date(dt); mon.setDate(dt.getDate()-(day===0?6:day-1));
+    const sun = new Date(mon); sun.setDate(mon.getDate()+6);
+    const key = mon.toISOString().slice(0,10);
+    if (!weeks[key]) {
+      const fmt = s => new Date(s+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
+      weeks[key] = { key, end:sun.toISOString().slice(0,10),
+        label: fmt(key)+' – '+fmt(sun.toISOString().slice(0,10)) };
+    }
+  });
+  return Object.values(weeks).sort((a,b)=>b.key.localeCompare(a.key));
+}
+
+function dfGetAvailableYears() {
+  const seen = {};
+  DAILY_DATA.forEach(r => { seen[r.date.slice(0,4)] = true; });
+  return Object.keys(seen).sort().reverse().map(y => ({ key:y, label:y }));
+}
+
+function dfGetDayOptions() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const dates = dfGetAvailableDates();
+  const opts = [
+    { key:'yesterday',  label:'Yesterday' },
+    { key:'twodays',    label:'2 Days Ago' },
+    { key:'threedays',  label:'3 Days Ago' },
+    { key:'fourdays',   label:'4 Days Ago' },
+    { key:'specific',   label:'Specific Date...' },
+  ];
+  return opts;
+}
+
+function dfResolveRows() {
+  if (!DF_SELECTED.length) return DAILY_DATA;
+  const today = new Date(); today.setHours(0,0,0,0);
+  let allRows = [];
+
+  DF_SELECTED.forEach(sel => {
+    if (DF_TYPE === 'DAY') {
+      const offsets = { yesterday:1, twodays:2, threedays:3, fourdays:4 };
+      let target = null;
+      if (offsets[sel] !== undefined) {
+        const d = new Date(today); d.setDate(d.getDate()-offsets[sel]);
+        target = d.toISOString().slice(0,10);
+      } else if (sel.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        target = sel;
+      }
+      if (target) {
+        const rows = DAILY_DATA.filter(r=>r.date===target);
+        // fallback to most recent if no data for that date
+        allRows = allRows.concat(rows.length ? rows : DAILY_DATA.filter(r=>r.date===dfGetAvailableDates()[0]));
+      }
+    }
+    else if (DF_TYPE === 'WEEK') {
+      const wk = dfGetAvailableWeeks().find(w=>w.key===sel);
+      if (wk) allRows = allRows.concat(DAILY_DATA.filter(r=>r.date>=wk.key&&r.date<=wk.end));
+    }
+    else if (DF_TYPE === 'MONTH') {
+      allRows = allRows.concat(DAILY_DATA.filter(r=>r.date.slice(0,7)===sel));
+    }
+    else if (DF_TYPE === 'SEASON') {
+      if (sel === 'alltime') return allRows = DAILY_DATA.slice();
+      allRows = allRows.concat(DAILY_DATA.filter(r=>r.date.startsWith(sel)));
+    }
+  });
+
+  // Deduplicate rows by date+pf_id
+  const seen = {};
+  return allRows.filter(r => {
+    const k = r.date+'|'+r.pf_id;
+    if (seen[k]) return false;
+    seen[k] = true; return true;
+  });
+}
+
+function dfAggregate(rows) {
+  const map = {};
+  rows.forEach(r => {
+    if (!r.pf_id) return;
+    if (!map[r.pf_id]) {
+      const full = (REAL_STATS||[]).find(a=>a.pf_id===r.pf_id) || {};
+      map[r.pf_id] = {
+        pf_id:r.pf_id, id:r.pf_id,
+        name:r.name||full.name||'', office:r.office||full.office||'',
+        initials:full.initials||(r.name||'??').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase(),
+        mgr:full.mgr||'', tier:3, role:'agent',
+        subs:0, offers:0, units:0, initial:0, talk_vals:[], days:0,
+      };
+    }
+    const d = map[r.pf_id];
+    d.subs+=r.subs||0; d.offers+=r.offers||0;
+    d.units+=r.units||0; d.initial+=r.initial||0;
+    if(r.talk>0) d.talk_vals.push(r.talk);
+    if(r.subs||r.offers||r.units||r.talk||r.initial) d.days++;
+  });
+  return Object.values(map).map(d => {
+    const talk = d.talk_vals.length
+      ? Math.round(d.talk_vals.reduce((a,b)=>a+b,0)/d.talk_vals.length*100)/100 : 0;
+    delete d.talk_vals; d.talk = talk;
+    d.pts = calcAgentPts(d, PTS);
+    return d;
+  });
+}
+
+// Public API — replaces old getFilteredData
+function getFilteredData(ignored) {
+  return dfAggregate(dfResolveRows());
+}
+
+function getOfficeFilteredTotals(ignored) {
+  const data = getFilteredData();
+  const tots = {
+    BLO:{subs:0,offers:0,units:0,initial:0,talk_vals:[]},
+    CA: {subs:0,offers:0,units:0,initial:0,talk_vals:[]},
+    FL: {subs:0,offers:0,units:0,initial:0,talk_vals:[]},
+  };
+  data.forEach(a => {
+    const o=a.office; if(!tots[o])return;
+    tots[o].subs+=a.subs||0; tots[o].offers+=a.offers||0;
+    tots[o].units+=a.units||0; tots[o].initial+=a.initial||0;
+    if(a.talk>0) tots[o].talk_vals.push(a.talk);
+  });
+  ['BLO','CA','FL'].forEach(o => {
+    const t=tots[o];
+    t.talk = t.talk_vals.length
+      ? Math.round(t.talk_vals.reduce((a,b)=>a+b,0)/t.talk_vals.length*100)/100 : 0;
+    t.pts = Math.round(t.initial*PTS.initial+t.subs*PTS.subs+
+                       t.offers*PTS.offers+t.units*PTS.units+t.talk*PTS.talk);
+    delete t.talk_vals;
+  });
+  return tots;
+}
+
+function dfGetLabel() {
+  if (!DF_SELECTED.length) return 'No filter';
+  if (DF_TYPE==='SEASON' && DF_SELECTED.includes('alltime')) return 'All Time';
+  if (DF_SELECTED.length === 1) {
+    const sel = DF_SELECTED[0];
+    if (DF_TYPE==='DAY') {
+      const map = {yesterday:'Yesterday',twodays:'2 Days Ago',threedays:'3 Days Ago',fourdays:'4 Days Ago'};
+      if (map[sel]) return map[sel];
+      if (sel.match(/^\d{4}-\d{2}-\d{2}$/))
+        return new Date(sel+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    }
+    if (DF_TYPE==='WEEK') {
+      const wk = dfGetAvailableWeeks().find(w=>w.key===sel);
+      return wk ? wk.label : sel;
+    }
+    if (DF_TYPE==='MONTH') {
+      const m = dfGetAvailableMonths().find(m=>m.key===sel);
+      return m ? m.label : sel;
+    }
+    if (DF_TYPE==='SEASON') return sel;
+  }
+  return DF_SELECTED.length+' '+DF_TYPE.toLowerCase()+'s selected';
+}
+
+// Keep backward compat
+let CURRENT_PERIOD = 'daily';
+function setPeriod(p, el) {
+  if(p==='daily')   { DF_TYPE='DAY';   DF_SELECTED=['yesterday']; }
+  if(p==='weekly')  { DF_TYPE='WEEK';  DF_SELECTED=[dfGetAvailableWeeks()[0]?.key||'']; }
+  if(p==='monthly') { DF_TYPE='MONTH'; DF_SELECTED=[dfGetAvailableMonths()[0]?.key||'']; }
+  document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+  dfRefreshAll();
+}
+
+function dfRefreshAll() {
+  // Update all filter UIs
+  document.querySelectorAll('.df-wrap').forEach(el => dfRenderUI(el.id));
+  // Update period label
+  const lblEl = document.getElementById('hs-period-label');
+  if (lblEl) lblEl.textContent = dfGetLabel();
+  // Refresh views
+  try{ renderLeaderboard(); }catch(e){}
+  try{ updateHomeStats(); }catch(e){}
+  try{ updateMatchupStats(); }catch(e){}
+}
+
+function refreshAllViews() { dfRefreshAll(); }
+
+// ── UI BUILDER ────────────────────────────────────────────────────
+let _dfOpenId = null;
+
+function dfRenderUI(wrapperId) {
+  const wrap = document.getElementById(wrapperId);
+  if (!wrap) return;
+
+  // Type buttons
+  let html = '<div class="df-wrap" id="'+wrapperId+'">';
+
+  // Period type pills
+  ['DAY','WEEK','MONTH','SEASON'].forEach(t => {
+    html += '<div class="df-btn'+(DF_TYPE===t?' active':'')+
+            '" onclick="dfSetType(''+t+'',''+wrapperId+'')">'+t+'</div>';
+  });
+
+  // Selection button
+  const label = dfGetLabel();
+  html += '<div class="df-btn'+(DF_SELECTED.length?'':'')+
+          '" id="df-sel-btn-'+wrapperId+
+          '" onclick="dfToggleDropdown(''+wrapperId+'')" style="min-width:140px;">'+
+          '<span>'+label+'</span><span class="df-arrow">▾</span></div>';
+
+  // Dropdown (hidden by default)
+  html += '<div class="df-dropdown" id="df-dd-'+wrapperId+
+          '" style="display:none;"></div>';
+
+  html += '</div>';
+  wrap.outerHTML = html;
+}
+
+function dfSetType(type, wrapperId) {
+  DF_TYPE = type;
+  DF_SELECTED = [];
+  // Set smart default
+  if (type==='DAY')    DF_SELECTED = ['yesterday'];
+  if (type==='WEEK')   { const w=dfGetAvailableWeeks(); if(w.length) DF_SELECTED=[w[0].key]; }
+  if (type==='MONTH')  { const m=dfGetAvailableMonths(); if(m.length) DF_SELECTED=[m[0].key]; }
+  if (type==='SEASON') DF_SELECTED = ['alltime'];
+  dfRefreshAll();
+}
+
+function dfToggleDropdown(wrapperId) {
+  const dd = document.getElementById('df-dd-'+wrapperId);
+  if (!dd) return;
+  const isOpen = dd.style.display !== 'none';
+  // Close all dropdowns
+  document.querySelectorAll('.df-dropdown').forEach(d=>d.style.display='none');
+  document.querySelectorAll('.df-btn').forEach(b=>b.classList.remove('open'));
+  if (!isOpen) {
+    dd.style.display = 'block';
+    document.getElementById('df-sel-btn-'+wrapperId)?.classList.add('open');
+    dfBuildDropdown(wrapperId);
+    _dfOpenId = wrapperId;
+  } else {
+    _dfOpenId = null;
+  }
+}
+
+function dfBuildDropdown(wrapperId) {
+  const dd = document.getElementById('df-dd-'+wrapperId);
+  if (!dd) return;
+
+  let opts = [];
+  if (DF_TYPE==='DAY')    opts = dfGetDayOptions();
+  if (DF_TYPE==='WEEK')   opts = dfGetAvailableWeeks();
+  if (DF_TYPE==='MONTH')  opts = dfGetAvailableMonths();
+  if (DF_TYPE==='SEASON') {
+    opts = [{key:'alltime',label:'All Time'}].concat(dfGetAvailableYears());
+  }
+
+  let html = '';
+  opts.forEach(opt => {
+    const checked = DF_SELECTED.includes(opt.key);
+    html += '<label class="df-dropdown-item">'+
+            '<input type="checkbox" value="'+opt.key+'"'+
+            (checked?' checked':'')+
+            ' onchange="dfToggleOption(''+opt.key+'',''+wrapperId+'')">'+
+            opt.label+'</label>';
+  });
+
+  // Specific date input
+  if (DF_TYPE==='DAY' && DF_SELECTED.includes('specific')) {
+    const dates = dfGetAvailableDates();
+    html += '<div style="padding:4px 14px 8px;">';
+    html += '<select class="df-specific-input" onchange="dfSetSpecificDate(this.value,''+wrapperId+'')">';
+    html += '<option value="">Pick a date...</option>';
+    dates.slice(0,60).forEach(d => {
+      const lbl = new Date(d+'T12:00:00').toLocaleDateString('en-US',
+        {weekday:'short',month:'short',day:'numeric',year:'numeric'});
+      const isSelected = DF_SELECTED.includes(d);
+      html += '<option value="'+d+'"'+(isSelected?' selected':'')+'>'+lbl+'</option>';
+    });
+    html += '</select></div>';
+  }
+
+  html += '<div class="df-dropdown-item apply-row">'+
+          '<button class="df-apply-btn" onclick="dfApply(''+wrapperId+'')">Apply</button>'+
+          '</div>';
+  dd.innerHTML = html;
+}
+
+function dfToggleOption(key, wrapperId) {
+  if (DF_TYPE==='DAY' || DF_TYPE==='SEASON') {
+    // Single select for DAY and SEASON (cleaner UX)
+    // But allow multi for WEEK and MONTH
+    DF_SELECTED = [key];
+  } else {
+    const idx = DF_SELECTED.indexOf(key);
+    if (idx>=0) DF_SELECTED.splice(idx,1);
+    else DF_SELECTED.push(key);
+    if (!DF_SELECTED.length) DF_SELECTED = [key]; // always keep at least one
+  }
+  dfBuildDropdown(wrapperId);
+}
+
+function dfSetSpecificDate(date, wrapperId) {
+  if (!date) return;
+  DF_SELECTED = DF_SELECTED.filter(s=>!s.match(/^\d{4}-\d{2}-\d{2}$/));
+  DF_SELECTED.push(date);
+  dfBuildDropdown(wrapperId);
+}
+
+function dfApply(wrapperId) {
+  if (!DF_SELECTED.length) {
+    if (DF_TYPE==='DAY') DF_SELECTED=['yesterday'];
+    else if (DF_TYPE==='SEASON') DF_SELECTED=['alltime'];
+  }
+  // Close dropdown
+  const dd = document.getElementById('df-dd-'+wrapperId);
+  if (dd) dd.style.display='none';
+  document.getElementById('df-sel-btn-'+wrapperId)?.classList.remove('open');
+  dfRefreshAll();
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.df-btn') && !e.target.closest('.df-dropdown')) {
+    document.querySelectorAll('.df-dropdown').forEach(d=>d.style.display='none');
+    document.querySelectorAll('.df-btn').forEach(b=>b.classList.remove('open'));
+    _dfOpenId = null;
+  }
+});
 
 document.addEventListener('DOMContentLoaded',()=>{
   buildSidebar('home');
