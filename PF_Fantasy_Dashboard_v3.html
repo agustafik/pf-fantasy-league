@@ -3752,28 +3752,36 @@ function dfRenderUI(wrapperId) {
   const wrap = document.getElementById(wrapperId);
   if (!wrap) return;
 
-  // Type buttons
-  let html = '<div class="df-wrap" id="'+wrapperId+'">';
+  // Clear and rebuild using DOM methods (no string quoting issues)
+  wrap.innerHTML = '';
+  wrap.className = 'df-wrap';
 
-  // Period type pills
-  ['DAY','WEEK','MONTH','SEASON'].forEach(t => {
-    html += '<div class="df-btn'+(DF_TYPE===t?' active':'')+
-            '" onclick="dfSetType(''+t+'',''+wrapperId+'')">'+t+'</div>';
+  // Type pills: DAY | WEEK | MONTH | SEASON
+  ['DAY','WEEK','MONTH','SEASON'].forEach(function(t) {
+    const btn = document.createElement('div');
+    btn.className = 'df-btn' + (DF_TYPE === t ? ' active' : '');
+    btn.textContent = t;
+    btn.onclick = function() { dfSetType(t, wrapperId); };
+    wrap.appendChild(btn);
   });
 
   // Selection button
-  const label = dfGetLabel();
-  html += '<div class="df-btn'+(DF_SELECTED.length?'':'')+
-          '" id="df-sel-btn-'+wrapperId+
-          '" onclick="dfToggleDropdown(''+wrapperId+'')" style="min-width:140px;">'+
-          '<span>'+label+'</span><span class="df-arrow">▾</span></div>';
+  const selBtn = document.createElement('div');
+  selBtn.className = 'df-btn';
+  selBtn.id = 'df-sel-btn-' + wrapperId;
+  selBtn.style.minWidth = '150px';
+  selBtn.innerHTML = '<span>' + dfGetLabel() + '</span><span class="df-arrow">&#9662;</span>';
+  selBtn.onclick = function() { dfToggleDropdown(wrapperId); };
+  wrap.appendChild(selBtn);
 
-  // Dropdown (hidden by default)
-  html += '<div class="df-dropdown" id="df-dd-'+wrapperId+
-          '" style="display:none;"></div>';
-
-  html += '</div>';
-  wrap.outerHTML = html;
+  // Dropdown container
+  const dd = document.createElement('div');
+  dd.className = 'df-dropdown';
+  dd.id = 'df-dd-' + wrapperId;
+  dd.style.display = 'none';
+  dd.style.position = 'absolute';
+  wrap.style.position = 'relative';
+  wrap.appendChild(dd);
 }
 
 function dfSetType(type, wrapperId) {
@@ -3805,46 +3813,64 @@ function dfToggleDropdown(wrapperId) {
 }
 
 function dfBuildDropdown(wrapperId) {
-  const dd = document.getElementById('df-dd-'+wrapperId);
+  const dd = document.getElementById('df-dd-' + wrapperId);
   if (!dd) return;
+  dd.innerHTML = '';
 
   let opts = [];
-  if (DF_TYPE==='DAY')    opts = dfGetDayOptions();
-  if (DF_TYPE==='WEEK')   opts = dfGetAvailableWeeks();
-  if (DF_TYPE==='MONTH')  opts = dfGetAvailableMonths();
-  if (DF_TYPE==='SEASON') {
-    opts = [{key:'alltime',label:'All Time'}].concat(dfGetAvailableYears());
+  if (DF_TYPE === 'DAY')    opts = dfGetDayOptions();
+  if (DF_TYPE === 'WEEK')   opts = dfGetAvailableWeeks();
+  if (DF_TYPE === 'MONTH')  opts = dfGetAvailableMonths();
+  if (DF_TYPE === 'SEASON') {
+    opts = [{key:'alltime', label:'All Time'}].concat(dfGetAvailableYears());
   }
 
-  let html = '';
-  opts.forEach(opt => {
-    const checked = DF_SELECTED.includes(opt.key);
-    html += '<label class="df-dropdown-item">'+
-            '<input type="checkbox" value="'+opt.key+'"'+
-            (checked?' checked':'')+
-            ' onchange="dfToggleOption(''+opt.key+'',''+wrapperId+'')">'+
-            opt.label+'</label>';
+  opts.forEach(function(opt) {
+    const row = document.createElement('label');
+    row.className = 'df-dropdown-item';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.value = opt.key;
+    cb.checked = DF_SELECTED.indexOf(opt.key) >= 0;
+    cb.onchange = (function(k) { return function() { dfToggleOption(k, wrapperId); }; })(opt.key);
+    const span = document.createElement('span');
+    span.textContent = opt.label;
+    row.appendChild(cb);
+    row.appendChild(span);
+    dd.appendChild(row);
   });
 
-  // Specific date input
-  if (DF_TYPE==='DAY' && DF_SELECTED.includes('specific')) {
+  // Specific date picker
+  if (DF_TYPE === 'DAY' && DF_SELECTED.indexOf('specific') >= 0) {
     const dates = dfGetAvailableDates();
-    html += '<div style="padding:4px 14px 8px;">';
-    html += '<select class="df-specific-input" onchange="dfSetSpecificDate(this.value,''+wrapperId+'')">';
-    html += '<option value="">Pick a date...</option>';
-    dates.slice(0,60).forEach(d => {
-      const lbl = new Date(d+'T12:00:00').toLocaleDateString('en-US',
-        {weekday:'short',month:'short',day:'numeric',year:'numeric'});
-      const isSelected = DF_SELECTED.includes(d);
-      html += '<option value="'+d+'"'+(isSelected?' selected':'')+'>'+lbl+'</option>';
+    const sel = document.createElement('select');
+    sel.className = 'df-specific-input';
+    sel.style.margin = '4px 14px';
+    sel.style.width = 'calc(100% - 28px)';
+    const defOpt = document.createElement('option');
+    defOpt.value = ''; defOpt.textContent = 'Pick a date...';
+    sel.appendChild(defOpt);
+    dates.slice(0, 60).forEach(function(d) {
+      const o = document.createElement('option');
+      o.value = d;
+      o.textContent = new Date(d + 'T12:00:00').toLocaleDateString('en-US',
+        {weekday:'short', month:'short', day:'numeric', year:'numeric'});
+      o.selected = DF_SELECTED.indexOf(d) >= 0;
+      sel.appendChild(o);
     });
-    html += '</select></div>';
+    sel.onchange = (function(wid) { return function() { dfSetSpecificDate(this.value, wid); }; })(wrapperId);
+    dd.appendChild(sel);
   }
 
-  html += '<div class="df-dropdown-item apply-row">'+
-          '<button class="df-apply-btn" onclick="dfApply(''+wrapperId+'')">Apply</button>'+
-          '</div>';
-  dd.innerHTML = html;
+  // Apply button
+  const applyRow = document.createElement('div');
+  applyRow.className = 'df-dropdown-item apply-row';
+  const applyBtn = document.createElement('button');
+  applyBtn.className = 'df-apply-btn';
+  applyBtn.textContent = 'Apply';
+  applyBtn.onclick = function() { dfApply(wrapperId); };
+  applyRow.appendChild(applyBtn);
+  dd.appendChild(applyRow);
 }
 
 function dfToggleOption(key, wrapperId) {
