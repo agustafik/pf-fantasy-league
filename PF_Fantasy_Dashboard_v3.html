@@ -917,57 +917,18 @@ body.role-manager .manager-up { display:block; }
   .stat-grid { grid-template-columns:repeat(2,1fr); }
 }
 
-/* ── DATE FILTER COMPONENT ── */
-.df-wrap { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-.df-btn {
-  display:flex; align-items:center; gap:6px;
-  background:var(--panel3); border:1px solid var(--border);
-  border-radius:8px; padding:6px 12px; cursor:pointer;
-  font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:600;
-  color:var(--text); transition:all 0.15s; white-space:nowrap;
-  position:relative; user-select:none;
-}
-.df-btn:hover { border-color:var(--green); color:var(--green); }
-.df-btn.active { background:var(--green-dim); border-color:var(--green); color:var(--green); }
-.df-btn .df-arrow { font-size:9px; margin-left:2px; transition:transform 0.2s; }
-.df-btn.open .df-arrow { transform:rotate(180deg); }
-.df-label { font-size:11px; color:var(--text3); white-space:nowrap; }
-
-.df-dropdown {
-  position:absolute; top:calc(100% + 6px); right:0; z-index:999;
-  background:var(--panel2); border:1px solid var(--border-g);
-  border-radius:10px; padding:8px 0; min-width:200px;
-  box-shadow:0 8px 32px rgba(0,0,0,0.5);
-  max-height:280px; overflow-y:auto;
-}
-.df-dropdown-item {
-  display:flex; align-items:center; gap:10px;
-  padding:8px 14px; cursor:pointer; font-size:13px; color:var(--text);
-  transition:background 0.1s;
-}
-.df-dropdown-item:hover { background:rgba(105,190,40,0.08); }
-.df-dropdown-item input[type=checkbox] {
-  width:15px; height:15px; accent-color:var(--green);
-  cursor:pointer; flex-shrink:0;
-}
-.df-dropdown-item.apply-row {
-  border-top:1px solid var(--border); margin-top:4px;
-  padding-top:10px; justify-content:center;
-}
-.df-apply-btn {
-  background:var(--green); color:var(--navy2);
-  border:none; border-radius:6px; padding:6px 20px;
-  font-family:'Rajdhani',sans-serif; font-size:13px;
-  font-weight:700; cursor:pointer; letter-spacing:0.5px;
-}
-.df-apply-btn:hover { background:var(--green2); }
-.df-specific-input {
-  width:100%; background:var(--panel3); border:1px solid var(--border);
-  border-radius:6px; padding:6px 10px; color:var(--text);
-  font-size:13px; outline:none; margin:4px 14px;
-  width:calc(100% - 28px);
-}
-
+.df-area{display:flex;align-items:center;gap:4px;flex-wrap:wrap;position:relative;}
+.df-pill{background:var(--panel3);border:1px solid var(--border);border-radius:8px;padding:5px 11px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;color:var(--text);letter-spacing:0.5px;}
+.df-pill:hover{border-color:var(--green);color:var(--green);}
+.df-pill.active{background:var(--green-dim);border-color:var(--green);color:var(--green);}
+.df-sel{background:var(--panel3);border:1px solid var(--border);border-radius:8px;padding:5px 11px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;color:var(--text);min-width:150px;display:flex;align-items:center;justify-content:space-between;gap:6px;}
+.df-sel:hover{border-color:var(--green);}
+.df-dd-wrap{position:relative;display:inline-block;}
+.df-dd{display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:9999;background:var(--panel2);border:1px solid var(--border-g);border-radius:10px;padding:6px 0;min-width:200px;max-height:260px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,0.5);}
+.df-dd-item{display:flex;align-items:center;gap:10px;padding:7px 14px;cursor:pointer;font-size:13px;color:var(--text);}
+.df-dd-item:hover{background:rgba(105,190,40,0.08);}
+.df-dd-item input[type=checkbox]{accent-color:var(--green);cursor:pointer;}
+.df-apply{background:var(--green);color:var(--navy2);border:none;border-radius:6px;padding:5px 20px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;cursor:pointer;margin:4px auto;display:block;}
 </style>
 </head>
 <body class="role-admin">
@@ -1076,7 +1037,7 @@ body.role-manager .manager-up { display:block; }
       <div class="rec-badge-icon">🎯</div>
       <div>
         <div class="rec-badge-label">Office MVP — BLO</div>
-        <div class="rec-badge-name" id="rec-mvp-BLO">—</div>
+        <div class="rec-badge-name">Jack Grady</div>
       </div>
     </div>
     <div class="rec-badge">
@@ -1090,9 +1051,186 @@ body.role-manager .manager-up { display:block; }
 
   <!-- My stats this week (agent view) / league snapshot (admin) -->
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
-  <div class="section-title" style="margin-bottom:0;flex:1;"><span class="st-accent">◆</span> Office Battle</div>
-  <div class="df-wrap" id="df-matchups"></div>
+  <div class="section-title" style="margin-bottom:0;flex:1;"><span class="st-accent">◆</span> League Snapshot — <span id="hs-period-label">Yesterday</span></div>
+  <div id="df-home" class="df-area"></div>
 </div>
+</div>
+  <div class="stat-grid" id="home-stat-grid">
+    <div class="stat-card accent">
+      <div class="stat-card-label">Total SUBS</div>
+      <div class="stat-card-value green" id="hs-subs">248</div>
+      <div class="stat-card-sub">All agents · <span id="hs-period-label-sub">May 2026</span></div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Total Offers</div>
+      <div class="stat-card-value" id="hs-offers">179</div>
+      <div class="stat-card-sub">Across all offices</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">New Units</div>
+      <div class="stat-card-value" id="hs-units">28</div>
+      <div class="stat-card-sub">May 2026</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Avg Talk Mins/Hr</div>
+      <div class="stat-card-value" id="hs-talk">11.1</div>
+      <div class="stat-card-sub">League average</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Active Agents</div>
+      <div class="stat-card-value" id="hs-active">42</div>
+      <div class="stat-card-sub">3 offices</div>
+    </div>
+  </div>
+
+  <!-- Active contest-- Active contest quick view -->
+  <div class="section-title"><span class="st-accent">◆</span> Active Contests</div>
+  <div class="grid-2">
+    <div class="contest-card" onclick="switchTab('matchups')">
+      <div class="contest-card-header">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <span class="contest-type-badge weekly">Weekly</span>
+            <span class="matchup-status live">Live</span>
+          </div>
+          <div class="contest-name">Week 1 — Office Matchup</div>
+          <div class="contest-meta">BLO vs CA vs FL · Apr 28–May 2</div>
+        </div>
+        <div style="text-align:right">
+          <div class="pts-val">BLO</div>
+          <div style="font-size:11px;color:var(--text3)">Currently leading</div>
+        </div>
+      </div>
+      <div class="contest-body" style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:12px;color:var(--text3)">Click to see full breakdown</span>
+        <span class="contest-expand">→</span>
+      </div>
+    </div>
+    <div class="contest-card" onclick="switchTab('contests')">
+      <div class="contest-card-header">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <span class="contest-type-badge daily">Daily</span>
+            <span class="matchup-status live">Live</span>
+          </div>
+          <div class="contest-name">Daily Sprint — SUBS Race</div>
+          <div class="contest-meta">Today only · Top 3 win</div>
+        </div>
+        <div style="text-align:right">
+          <div class="pts-val">4</div>
+          <div style="font-size:11px;color:var(--text3)">Leads today</div>
+        </div>
+      </div>
+      <div class="contest-body" style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:12px;color:var(--text3)">Ben Stark leading</span>
+        <span class="contest-expand">→</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Office standings quick -->
+  <div class="section-title"><span class="st-accent">◆</span> Office Standings — Week 1</div>
+  <div class="office-strip">
+    <div class="office-card">
+      <div class="office-card-header blo">
+        <div>
+          <div class="office-card-name blo">BLO — Buffalo</div>
+          <div style="font-size:11px;color:var(--text3)">Anthony Giordano · 12 agents</div>
+        </div>
+        <div style="text-align:right">
+          <div class="office-pts-big">8,420</div>
+          <div style="font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;">pts</div>
+        </div>
+      </div>
+      <div class="office-stat-rows">
+        <div class="office-stat-row"><span class="office-stat-label">SUBS</span><span class="office-stat-val">62</span></div>
+        <div class="office-stat-row"><span class="office-stat-label">OFFERS</span><span class="office-stat-val">241</span></div>
+        <div class="office-stat-row"><span class="office-stat-label">NEW UNITS</span><span class="office-stat-val">11</span></div>
+        <div class="office-stat-row"><span class="office-stat-label">Top Agent</span><span style="font-size:12px;color:var(--blo);font-weight:600;">Jack Grady</span></div>
+      </div>
+    </div>
+    <div class="office-card">
+      <div class="office-card-header ca">
+        <div>
+          <div class="office-card-name ca">CA — California</div>
+          <div style="font-size:11px;color:var(--text3)">Jonathan McCoy · 12 agents</div>
+        </div>
+        <div style="text-align:right">
+          <div class="office-pts-big">7,180</div>
+          <div style="font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;">pts</div>
+        </div>
+      </div>
+      <div class="office-stat-rows">
+        <div class="office-stat-row"><span class="office-stat-label">SUBS</span><span class="office-stat-val">51</span></div>
+        <div class="office-stat-row"><span class="office-stat-label">OFFERS</span><span class="office-stat-val">198</span></div>
+        <div class="office-stat-row"><span class="office-stat-label">NEW UNITS</span><span class="office-stat-val">9</span></div>
+        <div class="office-stat-row"><span class="office-stat-label">Top Agent</span><span style="font-size:12px;color:var(--ca);font-weight:600;">Travis Jones</span></div>
+      </div>
+    </div>
+    <div class="office-card">
+      <div class="office-card-header fl">
+        <div>
+          <div class="office-card-name fl">FL — Florida</div>
+          <div style="font-size:11px;color:var(--text3)">Josiah Emdin · 15 agents</div>
+        </div>
+        <div style="text-align:right">
+          <div class="office-pts-big">6,950</div>
+          <div style="font-size:9px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;">pts</div>
+        </div>
+      </div>
+      <div class="office-stat-rows">
+        <div class="office-stat-row"><span class="office-stat-label">SUBS</span><span class="office-stat-val">48</span></div>
+        <div class="office-stat-row"><span class="office-stat-label">OFFERS</span><span class="office-stat-val">183</span></div>
+        <div class="office-stat-row"><span class="office-stat-label">NEW UNITS</span><span class="office-stat-val">8</span></div>
+        <div class="office-stat-row"><span class="office-stat-label">Top Agent</span><span style="font-size:12px;color:var(--fl);font-weight:600;">Steven Triana</span></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /view-home -->
+
+
+<!-- ══════════════════════════════════════
+     MATCHUPS TAB
+══════════════════════════════════════ -->
+<div class="view" id="view-matchups">
+
+  <div class="page-header">
+    <div class="page-header-left">
+      <div class="page-title">Matchups</div>
+      <div class="page-subtitle">Head-to-head results, office battles, and weekly scores</div>
+    </div>
+    <div class="page-actions">
+      <div class="last-updated"><div class="lu-dot"></div>Updated today, 9:00 AM</div>
+    </div>
+  </div>
+
+  <!-- Week selector -->
+  <div class="week-sel-bar">
+    <div class="week-btn active" onclick="selectWeek(1,this)">Week 1</div>
+    <div class="week-btn" onclick="selectWeek(2,this)">Week 2</div>
+    <div class="week-btn" onclick="selectWeek(3,this)">Week 3</div>
+    <div class="week-btn" onclick="selectWeek(4,this)">Week 4</div>
+    <div class="week-btn" onclick="selectWeek(5,this)">Week 5</div>
+    <div class="week-btn" onclick="selectWeek(6,this)">Week 6</div>
+    <div class="week-btn" onclick="selectWeek(7,this)">Week 7</div>
+    <div class="week-btn" onclick="selectWeek(8,this)">Week 8</div>
+  </div>
+
+  <!-- Subtab pills -->
+  <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;">
+    <div class="btn primary" id="matchup-sub-office" onclick="showMatchupSub('office')">Office vs Office</div>
+    <div class="btn" id="matchup-sub-1v1" onclick="showMatchupSub('1v1')">1v1 Matchups</div>
+    <div class="btn" id="matchup-sub-history" onclick="showMatchupSub('history')">W/L History</div>
+  </div>
+
+  <!-- Office vs Office -->
+  <div id="matchup-panel-office">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+  <div class="section-title" style="margin-bottom:0;flex:1;"><span class="st-accent">◆</span> Office Battle</div>
+  <div id="df-matchups" class="df-area"></div>
+</div>
+  </div>
 </div>
 
     <!-- BLO vs CA featured -->
@@ -1377,7 +1515,7 @@ body.role-manager .manager-up { display:block; }
 
   <!-- Leaderboard -->
   <div id="league-panel-lb">
-    <div style="margin-bottom:16px;"><div class="df-wrap" id="df-league"></div></div>
+    <div style="margin-bottom:16px;"><div id="df-league" class="df-area"></div></div>
       <div class="week-btn" onclick="this.parentNode.querySelectorAll('.week-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">Week 1</div>
       <div class="week-btn" onclick="this.parentNode.querySelectorAll('.week-btn').forEach(b=>b.classList.remove('active'));this.classList.add('active')">Month</div>
     </div>
@@ -2855,18 +2993,6 @@ function updateHomeStats() {
     '⭐ Top SUBS: '+(topSubs?topSubs.name+' ('+topSubs.subs+')':'-')+' | '+
     '🎯 Top Units: '+(topUnits?topUnits.name+' ('+topUnits.units+')':'-')+' | '+
     '📊 Data through May 13, 2026 | 💪 Every deal counts';
-
-  // Top agent per office — full name
-  const periodData = getFilteredData(CURRENT_PERIOD);
-  ['BLO','CA','FL'].forEach(o => {
-    const tEl = document.getElementById('top-agent-'+o);
-    const rEl = document.getElementById('rec-mvp-'+o);
-    const best = [...periodData].filter(a=>a.office===o).sort((a,b)=>b.pts-a.pts)[0];
-    const name = best ? best.name : '—';
-    if (tEl) tEl.textContent = name;
-    if (rEl) rEl.textContent = name;
-  });
-
 }
 
 // ══════════════════════════════════════════════════════════
@@ -2913,15 +3039,6 @@ function updateMatchupStats() {
   const caTag  = document.getElementById('matchup-ca-tag');
   if(bloTag) { bloTag.textContent=bloLeads?'LEADING':'TRAILING'; bloTag.className='matchup-status '+(bloLeads?'live':''); bloTag.style.background=bloLeads?'':'var(--gray-dim)'; bloTag.style.color=bloLeads?'':'var(--gray2)'; }
   if(caTag)  { caTag.textContent=bloLeads?'TRAILING':'LEADING'; caTag.className='matchup-status '+(bloLeads?'':'live'); caTag.style.background=bloLeads?'var(--gray-dim)':''; caTag.style.color=bloLeads?'var(--gray2)':''; }
-
-  // Top agent per office — full name
-  const mData = getFilteredData(CURRENT_PERIOD);
-  ['BLO','CA','FL'].forEach(o => {
-    const el = document.getElementById('top-agent-'+o);
-    if (!el) return;
-    const best = [...mData].filter(a=>a.office===o).sort((a,b)=>b.pts-a.pts)[0];
-    el.textContent = best ? best.name : '—';
-  });
 }
 
 // ══════════════════════════════════════════════════════════
@@ -3064,10 +3181,7 @@ async function loadLiveData() {
     console.log(`✓ Loaded ${DAILY_DATA.length} rows through ${lastDate}`);
 
     hideLoadingScreen();
-    // Init all filter UIs now that data is loaded
-    dfRenderUI('df-home');
-    dfRenderUI('df-matchups');
-    dfRenderUI('df-league');
+    dfRenderAll();
     dfRefreshAll();
 
     // Update last updated label
@@ -3536,377 +3650,23 @@ function saveContest2Settings(){
 }
 
 
-// ══════════════════════════════════════════════════════════════
-// SMART DATE FILTER SYSTEM
-// ══════════════════════════════════════════════════════════════
-
-// Filter state — what is currently selected
-let DF_TYPE     = 'DAY';    // DAY | WEEK | MONTH | SEASON
-let DF_SELECTED = ['yesterday']; // array of selected keys
-
-function dfGetAvailableDates() {
-  return [...new Set(DAILY_DATA.map(r=>r.date))].sort().reverse();
-}
-
-function dfGetAvailableMonths() {
-  const seen = {};
-  DAILY_DATA.forEach(r => { seen[r.date.slice(0,7)] = true; });
-  return Object.keys(seen).sort().reverse().map(m => {
-    const [y,mo] = m.split('-');
-    const name = ['January','February','March','April','May','June',
-                  'July','August','September','October','November','December'][parseInt(mo)-1];
-    return { key:m, label:name+' '+y };
-  });
-}
-
-function dfGetAvailableWeeks() {
-  const weeks = {};
-  DAILY_DATA.forEach(r => {
-    const dt  = new Date(r.date+'T12:00:00');
-    const day = dt.getDay();
-    const mon = new Date(dt); mon.setDate(dt.getDate()-(day===0?6:day-1));
-    const sun = new Date(mon); sun.setDate(mon.getDate()+6);
-    const key = mon.toISOString().slice(0,10);
-    if (!weeks[key]) {
-      const fmt = s => new Date(s+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});
-      weeks[key] = { key, end:sun.toISOString().slice(0,10),
-        label: fmt(key)+' – '+fmt(sun.toISOString().slice(0,10)) };
-    }
-  });
-  return Object.values(weeks).sort((a,b)=>b.key.localeCompare(a.key));
-}
-
-function dfGetAvailableYears() {
-  const seen = {};
-  DAILY_DATA.forEach(r => { seen[r.date.slice(0,4)] = true; });
-  return Object.keys(seen).sort().reverse().map(y => ({ key:y, label:y }));
-}
-
-function dfGetDayOptions() {
-  const today = new Date(); today.setHours(0,0,0,0);
-  const dates = dfGetAvailableDates();
-  const opts = [
-    { key:'yesterday',  label:'Yesterday' },
-    { key:'twodays',    label:'2 Days Ago' },
-    { key:'threedays',  label:'3 Days Ago' },
-    { key:'fourdays',   label:'4 Days Ago' },
-    { key:'specific',   label:'Specific Date...' },
-  ];
-  return opts;
-}
-
-function dfResolveRows() {
-  if (!DF_SELECTED.length) return DAILY_DATA;
-  const today = new Date(); today.setHours(0,0,0,0);
-  let allRows = [];
-
-  DF_SELECTED.forEach(sel => {
-    if (DF_TYPE === 'DAY') {
-      const offsets = { yesterday:1, twodays:2, threedays:3, fourdays:4 };
-      let target = null;
-      if (offsets[sel] !== undefined) {
-        const d = new Date(today); d.setDate(d.getDate()-offsets[sel]);
-        target = d.toISOString().slice(0,10);
-      } else if (sel.match(/^\d{4}-\d{2}-\d{2}$/)) {
-        target = sel;
-      }
-      if (target) {
-        const rows = DAILY_DATA.filter(r=>r.date===target);
-        // fallback to most recent if no data for that date
-        allRows = allRows.concat(rows.length ? rows : DAILY_DATA.filter(r=>r.date===dfGetAvailableDates()[0]));
-      }
-    }
-    else if (DF_TYPE === 'WEEK') {
-      const wk = dfGetAvailableWeeks().find(w=>w.key===sel);
-      if (wk) allRows = allRows.concat(DAILY_DATA.filter(r=>r.date>=wk.key&&r.date<=wk.end));
-    }
-    else if (DF_TYPE === 'MONTH') {
-      allRows = allRows.concat(DAILY_DATA.filter(r=>r.date.slice(0,7)===sel));
-    }
-    else if (DF_TYPE === 'SEASON') {
-      if (sel === 'alltime') return allRows = DAILY_DATA.slice();
-      allRows = allRows.concat(DAILY_DATA.filter(r=>r.date.startsWith(sel)));
-    }
-  });
-
-  // Deduplicate rows by date+pf_id
-  const seen = {};
-  return allRows.filter(r => {
-    const k = r.date+'|'+r.pf_id;
-    if (seen[k]) return false;
-    seen[k] = true; return true;
-  });
-}
-
-function dfAggregate(rows) {
-  const map = {};
-  rows.forEach(r => {
-    if (!r.pf_id) return;
-    if (!map[r.pf_id]) {
-      const full = (REAL_STATS||[]).find(a=>a.pf_id===r.pf_id) || {};
-      map[r.pf_id] = {
-        pf_id:r.pf_id, id:r.pf_id,
-        name:r.name||full.name||'', office:r.office||full.office||'',
-        initials:full.initials||(r.name||'??').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase(),
-        mgr:full.mgr||'', tier:3, role:'agent',
-        subs:0, offers:0, units:0, initial:0, talk_vals:[], days:0,
-      };
-    }
-    const d = map[r.pf_id];
-    d.subs+=r.subs||0; d.offers+=r.offers||0;
-    d.units+=r.units||0; d.initial+=r.initial||0;
-    if(r.talk>0) d.talk_vals.push(r.talk);
-    if(r.subs||r.offers||r.units||r.talk||r.initial) d.days++;
-  });
-  return Object.values(map).map(d => {
-    const talk = d.talk_vals.length
-      ? Math.round(d.talk_vals.reduce((a,b)=>a+b,0)/d.talk_vals.length*100)/100 : 0;
-    delete d.talk_vals; d.talk = talk;
-    d.pts = calcAgentPts(d, PTS);
-    return d;
-  });
-}
-
-// Public API — replaces old getFilteredData
-function getFilteredData(ignored) {
-  return dfAggregate(dfResolveRows());
-}
-
-function getOfficeFilteredTotals(ignored) {
-  const data = getFilteredData();
-  const tots = {
-    BLO:{subs:0,offers:0,units:0,initial:0,talk_vals:[]},
-    CA: {subs:0,offers:0,units:0,initial:0,talk_vals:[]},
-    FL: {subs:0,offers:0,units:0,initial:0,talk_vals:[]},
-  };
-  data.forEach(a => {
-    const o=a.office; if(!tots[o])return;
-    tots[o].subs+=a.subs||0; tots[o].offers+=a.offers||0;
-    tots[o].units+=a.units||0; tots[o].initial+=a.initial||0;
-    if(a.talk>0) tots[o].talk_vals.push(a.talk);
-  });
-  ['BLO','CA','FL'].forEach(o => {
-    const t=tots[o];
-    t.talk = t.talk_vals.length
-      ? Math.round(t.talk_vals.reduce((a,b)=>a+b,0)/t.talk_vals.length*100)/100 : 0;
-    t.pts = Math.round(t.initial*PTS.initial+t.subs*PTS.subs+
-                       t.offers*PTS.offers+t.units*PTS.units+t.talk*PTS.talk);
-    delete t.talk_vals;
-  });
-  return tots;
-}
-
-function dfGetLabel() {
-  if (!DF_SELECTED.length) return 'No filter';
-  if (DF_TYPE==='SEASON' && DF_SELECTED.includes('alltime')) return 'All Time';
-  if (DF_SELECTED.length === 1) {
-    const sel = DF_SELECTED[0];
-    if (DF_TYPE==='DAY') {
-      const map = {yesterday:'Yesterday',twodays:'2 Days Ago',threedays:'3 Days Ago',fourdays:'4 Days Ago'};
-      if (map[sel]) return map[sel];
-      if (sel.match(/^\d{4}-\d{2}-\d{2}$/))
-        return new Date(sel+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-    }
-    if (DF_TYPE==='WEEK') {
-      const wk = dfGetAvailableWeeks().find(w=>w.key===sel);
-      return wk ? wk.label : sel;
-    }
-    if (DF_TYPE==='MONTH') {
-      const m = dfGetAvailableMonths().find(m=>m.key===sel);
-      return m ? m.label : sel;
-    }
-    if (DF_TYPE==='SEASON') return sel;
-  }
-  return DF_SELECTED.length+' '+DF_TYPE.toLowerCase()+'s selected';
-}
-
-// Keep backward compat
-let CURRENT_PERIOD = 'daily';
-function setPeriod(p, el) {
-  if(p==='daily')   { DF_TYPE='DAY';   DF_SELECTED=['yesterday']; }
-  if(p==='weekly')  { DF_TYPE='WEEK';  DF_SELECTED=[dfGetAvailableWeeks()[0]?.key||'']; }
-  if(p==='monthly') { DF_TYPE='MONTH'; DF_SELECTED=[dfGetAvailableMonths()[0]?.key||'']; }
-  document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));
-  if(el) el.classList.add('active');
-  dfRefreshAll();
-}
-
-function dfRefreshAll() {
-  // Update all filter UIs
-  document.querySelectorAll('.df-wrap').forEach(el => dfRenderUI(el.id));
-  // Update period label
-  const lblEl = document.getElementById('hs-period-label');
-  if (lblEl) lblEl.textContent = dfGetLabel();
-  // Refresh views
-  try{ renderLeaderboard(); }catch(e){}
-  try{ updateHomeStats(); }catch(e){}
-  try{ updateMatchupStats(); }catch(e){}
-}
-
-function refreshAllViews() { dfRefreshAll(); }
-
-// ── UI BUILDER ────────────────────────────────────────────────────
-let _dfOpenId = null;
-
-function dfRenderUI(wrapperId) {
-  const wrap = document.getElementById(wrapperId);
-  if (!wrap) return;
-
-  // Clear and rebuild using DOM methods (no string quoting issues)
-  wrap.innerHTML = '';
-  wrap.className = 'df-wrap';
-
-  // Type pills: DAY | WEEK | MONTH | SEASON
-  ['DAY','WEEK','MONTH','SEASON'].forEach(function(t) {
-    const btn = document.createElement('div');
-    btn.className = 'df-btn' + (DF_TYPE === t ? ' active' : '');
-    btn.textContent = t;
-    btn.onclick = function() { dfSetType(t, wrapperId); };
-    wrap.appendChild(btn);
-  });
-
-  // Selection button
-  const selBtn = document.createElement('div');
-  selBtn.className = 'df-btn';
-  selBtn.id = 'df-sel-btn-' + wrapperId;
-  selBtn.style.minWidth = '150px';
-  selBtn.innerHTML = '<span>' + dfGetLabel() + '</span><span class="df-arrow">&#9662;</span>';
-  selBtn.onclick = function() { dfToggleDropdown(wrapperId); };
-  wrap.appendChild(selBtn);
-
-  // Dropdown container
-  const dd = document.createElement('div');
-  dd.className = 'df-dropdown';
-  dd.id = 'df-dd-' + wrapperId;
-  dd.style.display = 'none';
-  dd.style.position = 'absolute';
-  wrap.style.position = 'relative';
-  wrap.appendChild(dd);
-}
-
-function dfSetType(type, wrapperId) {
-  DF_TYPE = type;
-  DF_SELECTED = [];
-  // Set smart default
-  if (type==='DAY')    DF_SELECTED = ['yesterday'];
-  if (type==='WEEK')   { const w=dfGetAvailableWeeks(); if(w.length) DF_SELECTED=[w[0].key]; }
-  if (type==='MONTH')  { const m=dfGetAvailableMonths(); if(m.length) DF_SELECTED=[m[0].key]; }
-  if (type==='SEASON') DF_SELECTED = ['alltime'];
-  dfRefreshAll();
-}
-
-function dfToggleDropdown(wrapperId) {
-  const dd = document.getElementById('df-dd-'+wrapperId);
-  if (!dd) return;
-  const isOpen = dd.style.display !== 'none';
-  // Close all dropdowns
-  document.querySelectorAll('.df-dropdown').forEach(d=>d.style.display='none');
-  document.querySelectorAll('.df-btn').forEach(b=>b.classList.remove('open'));
-  if (!isOpen) {
-    dd.style.display = 'block';
-    document.getElementById('df-sel-btn-'+wrapperId)?.classList.add('open');
-    dfBuildDropdown(wrapperId);
-    _dfOpenId = wrapperId;
-  } else {
-    _dfOpenId = null;
-  }
-}
-
-function dfBuildDropdown(wrapperId) {
-  const dd = document.getElementById('df-dd-' + wrapperId);
-  if (!dd) return;
-  dd.innerHTML = '';
-
-  let opts = [];
-  if (DF_TYPE === 'DAY')    opts = dfGetDayOptions();
-  if (DF_TYPE === 'WEEK')   opts = dfGetAvailableWeeks();
-  if (DF_TYPE === 'MONTH')  opts = dfGetAvailableMonths();
-  if (DF_TYPE === 'SEASON') {
-    opts = [{key:'alltime', label:'All Time'}].concat(dfGetAvailableYears());
-  }
-
-  opts.forEach(function(opt) {
-    const row = document.createElement('label');
-    row.className = 'df-dropdown-item';
-    const cb = document.createElement('input');
-    cb.type = 'checkbox';
-    cb.value = opt.key;
-    cb.checked = DF_SELECTED.indexOf(opt.key) >= 0;
-    cb.onchange = (function(k) { return function() { dfToggleOption(k, wrapperId); }; })(opt.key);
-    const span = document.createElement('span');
-    span.textContent = opt.label;
-    row.appendChild(cb);
-    row.appendChild(span);
-    dd.appendChild(row);
-  });
-
-  // Specific date picker
-  if (DF_TYPE === 'DAY' && DF_SELECTED.indexOf('specific') >= 0) {
-    const dates = dfGetAvailableDates();
-    const sel = document.createElement('select');
-    sel.className = 'df-specific-input';
-    sel.style.margin = '4px 14px';
-    sel.style.width = 'calc(100% - 28px)';
-    const defOpt = document.createElement('option');
-    defOpt.value = ''; defOpt.textContent = 'Pick a date...';
-    sel.appendChild(defOpt);
-    dates.slice(0, 60).forEach(function(d) {
-      const o = document.createElement('option');
-      o.value = d;
-      o.textContent = new Date(d + 'T12:00:00').toLocaleDateString('en-US',
-        {weekday:'short', month:'short', day:'numeric', year:'numeric'});
-      o.selected = DF_SELECTED.indexOf(d) >= 0;
-      sel.appendChild(o);
-    });
-    sel.onchange = (function(wid) { return function() { dfSetSpecificDate(this.value, wid); }; })(wrapperId);
-    dd.appendChild(sel);
-  }
-
-  // Apply button
-  const applyRow = document.createElement('div');
-  applyRow.className = 'df-dropdown-item apply-row';
-  const applyBtn = document.createElement('button');
-  applyBtn.className = 'df-apply-btn';
-  applyBtn.textContent = 'Apply';
-  applyBtn.onclick = function() { dfApply(wrapperId); };
-  applyRow.appendChild(applyBtn);
-  dd.appendChild(applyRow);
-}
-
-function dfToggleOption(key, wrapperId) {
-  if (DF_TYPE==='DAY' || DF_TYPE==='SEASON') {
-    // Single select for DAY and SEASON (cleaner UX)
-    // But allow multi for WEEK and MONTH
-    DF_SELECTED = [key];
-  } else {
-    const idx = DF_SELECTED.indexOf(key);
-    if (idx>=0) DF_SELECTED.splice(idx,1);
-    else DF_SELECTED.push(key);
-    if (!DF_SELECTED.length) DF_SELECTED = [key]; // always keep at least one
-  }
-  dfBuildDropdown(wrapperId);
-}
-
-function dfSetSpecificDate(date, wrapperId) {
-  if (!date) return;
-  DF_SELECTED = DF_SELECTED.filter(s=>!s.match(/^\d{4}-\d{2}-\d{2}$/));
-  DF_SELECTED.push(date);
-  dfBuildDropdown(wrapperId);
-}
-
-function dfApply(wrapperId) {
-  if (!DF_SELECTED.length) {
-    if (DF_TYPE==='DAY') DF_SELECTED=['yesterday'];
-    else if (DF_TYPE==='SEASON') DF_SELECTED=['alltime'];
-  }
-  // Close dropdown
-  const dd = document.getElementById('df-dd-'+wrapperId);
-  if (dd) dd.style.display='none';
-  document.getElementById('df-sel-btn-'+wrapperId)?.classList.remove('open');
-  dfRefreshAll();
-}
-
-
+var DF_TYPE='DAY',DF_SELECTED=['yesterday'];
+function dfGetMonths(){var seen={};(DAILY_DATA||[]).forEach(function(r){seen[r.date.slice(0,7)]=true;});var mn=['January','February','March','April','May','June','July','August','September','October','November','December'];return Object.keys(seen).sort().reverse().map(function(m){var p=m.split('-');return{key:m,label:mn[parseInt(p[1])-1]+' '+p[0]};});}
+function dfGetWeeks(){var w={};(DAILY_DATA||[]).forEach(function(r){var dt=new Date(r.date+'T12:00:00'),d=dt.getDay(),mon=new Date(dt);mon.setDate(dt.getDate()-(d===0?6:d-1));var sun=new Date(mon);sun.setDate(mon.getDate()+6);var k=mon.toISOString().slice(0,10);if(!w[k]){var f=function(s){return new Date(s+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});};w[k]={key:k,end:sun.toISOString().slice(0,10),label:f(k)+' \u2013 '+f(sun.toISOString().slice(0,10))};}});return Object.values(w).sort(function(a,b){return b.key.localeCompare(a.key);});}
+function dfGetDates(){return[...new Set((DAILY_DATA||[]).map(function(r){return r.date;}))].sort().reverse();}
+function dfGetYears(){var s={};(DAILY_DATA||[]).forEach(function(r){s[r.date.slice(0,4)]=true;});return Object.keys(s).sort().reverse().map(function(y){return{key:y,label:y};});}
+function dfGetLabel(){if(!DF_SELECTED.length)return'None';if(DF_SELECTED.length>1)return DF_SELECTED.length+' selected';var s=DF_SELECTED[0],map={yesterday:'Yesterday',twodays:'2 Days Ago',threedays:'3 Days Ago',fourdays:'4 Days Ago',specific:'Specific Date',alltime:'All Time'};if(map[s])return map[s];if(/^\d{4}-\d{2}$/.test(s)){var m=dfGetMonths().find(function(m){return m.key===s;});return m?m.label:s;}if(/^\d{4}-\d{2}-\d{2}$/.test(s)&&s.length===10){var wk=dfGetWeeks().find(function(w){return w.key===s;});if(wk)return wk.label;return new Date(s+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}return s;}
+function dfResolve(){var today=new Date();today.setHours(0,0,0,0);var dates=dfGetDates(),all=[];DF_SELECTED.forEach(function(sel){var rows=[];if(DF_TYPE==='DAY'){var off={yesterday:1,twodays:2,threedays:3,fourdays:4},target=null;if(off[sel]!==undefined){var d=new Date(today);d.setDate(d.getDate()-off[sel]);target=d.toISOString().slice(0,10);}else if(/^\d{4}-\d{2}-\d{2}$/.test(sel)&&sel.length===10)target=sel;if(target)rows=(DAILY_DATA||[]).filter(function(r){return r.date===target;});if(!rows.length&&dates.length)rows=(DAILY_DATA||[]).filter(function(r){return r.date===dates[0];});}else if(DF_TYPE==='WEEK'){var wk=dfGetWeeks().find(function(w){return w.key===sel;});if(wk)rows=(DAILY_DATA||[]).filter(function(r){return r.date>=wk.key&&r.date<=wk.end;});}else if(DF_TYPE==='MONTH'){rows=(DAILY_DATA||[]).filter(function(r){return r.date.slice(0,7)===sel;});}else{if(sel==='alltime')rows=(DAILY_DATA||[]).slice();else rows=(DAILY_DATA||[]).filter(function(r){return r.date.startsWith(sel);});}all=all.concat(rows);});var seen={};return all.filter(function(r){var k=r.date+'|'+r.pf_id;if(seen[k])return false;seen[k]=true;return true;});}
+function dfAggregate(rows){var map={};(rows||[]).forEach(function(r){if(!r.pf_id)return;if(!map[r.pf_id]){var full=(REAL_STATS||[]).find(function(a){return a.pf_id===r.pf_id;})||{};map[r.pf_id]={pf_id:r.pf_id,id:r.pf_id,name:r.name||full.name||'',office:r.office||full.office||'',initials:full.initials||(r.name||'??').split(' ').map(function(w){return w[0];}).slice(0,2).join('').toUpperCase(),mgr:full.mgr||'',tier:3,role:'agent',subs:0,offers:0,units:0,initial:0,talk_vals:[],days:0};}var d=map[r.pf_id];d.subs+=r.subs||0;d.offers+=r.offers||0;d.units+=r.units||0;d.initial+=r.initial||0;if(r.talk>0)d.talk_vals.push(r.talk);if(r.subs||r.offers||r.units||r.talk||r.initial)d.days++;});return Object.values(map).map(function(d){var t=d.talk_vals.length?Math.round(d.talk_vals.reduce(function(a,b){return a+b;},0)/d.talk_vals.length*100)/100:0;delete d.talk_vals;d.talk=t;d.pts=calcAgentPts(d,PTS);return d;});}
+function getFilteredData(){return dfAggregate(dfResolve());}
+function getOfficeFilteredTotals(){var data=getFilteredData(),tots={BLO:{subs:0,offers:0,units:0,initial:0,tv:[]},CA:{subs:0,offers:0,units:0,initial:0,tv:[]},FL:{subs:0,offers:0,units:0,initial:0,tv:[]}};data.forEach(function(a){var o=a.office;if(!tots[o])return;tots[o].subs+=a.subs||0;tots[o].offers+=a.offers||0;tots[o].units+=a.units||0;tots[o].initial+=a.initial||0;if(a.talk>0)tots[o].tv.push(a.talk);});['BLO','CA','FL'].forEach(function(o){var t=tots[o];t.talk=t.tv.length?Math.round(t.tv.reduce(function(a,b){return a+b;},0)/t.tv.length*100)/100:0;t.pts=Math.round(t.initial*(PTS.initial||5)+t.subs*(PTS.subs||10)+t.offers*(PTS.offers||25)+t.units*(PTS.units||50)+t.talk*(PTS.talk||1));delete t.tv;});return tots;}
+var CURRENT_PERIOD='daily';
+function setPeriod(p,el){if(p==='daily'){DF_TYPE='DAY';DF_SELECTED=['yesterday'];}if(p==='weekly'){DF_TYPE='WEEK';var w=dfGetWeeks();DF_SELECTED=w.length?[w[0].key]:[];}if(p==='monthly'){DF_TYPE='MONTH';var m=dfGetMonths();DF_SELECTED=m.length?[m[0].key]:[];}document.querySelectorAll('.period-btn').forEach(function(b){b.classList.remove('active');});if(el)el.classList.add('active');dfRefreshAll();}
+function dfRefreshAll(){dfRenderAll();var lbl=document.getElementById('hs-period-label');if(lbl)lbl.textContent=dfGetLabel();try{renderLeaderboard();}catch(e){}try{updateHomeStats();}catch(e){}try{updateMatchupStats();}catch(e){}}
+function refreshAllViews(){dfRefreshAll();}
+function dfBuildOpts(dd,wid){dd.innerHTML='';var opts=[];if(DF_TYPE==='DAY')opts=[{key:'yesterday',label:'Yesterday'},{key:'twodays',label:'2 Days Ago'},{key:'threedays',label:'3 Days Ago'},{key:'fourdays',label:'4 Days Ago'},{key:'specific',label:'Specific Date...'}];else if(DF_TYPE==='WEEK')opts=dfGetWeeks();else if(DF_TYPE==='MONTH')opts=dfGetMonths();else opts=[{key:'alltime',label:'All Time'}].concat(dfGetYears());opts.forEach(function(opt){var row=document.createElement('label');row.className='df-dd-item';var cb=document.createElement('input');cb.type='checkbox';cb.value=opt.key;cb.checked=DF_SELECTED.indexOf(opt.key)>=0;cb.onchange=(function(k){return function(){if(DF_TYPE==='DAY'||DF_TYPE==='SEASON'){DF_SELECTED=[k];}else{var i=DF_SELECTED.indexOf(k);if(i>=0)DF_SELECTED.splice(i,1);else DF_SELECTED.push(k);if(!DF_SELECTED.length)DF_SELECTED=[k];}dfBuildOpts(dd,wid);};})(opt.key);var span=document.createElement('span');span.textContent=opt.label;row.appendChild(cb);row.appendChild(span);dd.appendChild(row);});if(DF_TYPE==='DAY'&&DF_SELECTED.indexOf('specific')>=0){var dates=dfGetDates(),sel=document.createElement('select');sel.style.cssText='margin:4px 14px;width:calc(100% - 28px);background:var(--panel3);border:1px solid var(--border);border-radius:6px;padding:6px;color:var(--text);font-size:12px;outline:none;';var def=document.createElement('option');def.value='';def.textContent='Pick a date...';sel.appendChild(def);dates.slice(0,60).forEach(function(d){var o=document.createElement('option');o.value=d;o.textContent=new Date(d+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});o.selected=DF_SELECTED.indexOf(d)>=0;sel.appendChild(o);});sel.onchange=(function(w){return function(){var v=this.value;if(!v)return;DF_SELECTED=DF_SELECTED.filter(function(s){return!/^\d{4}-\d{2}-\d{2}$/.test(s)||s.length!==10;});DF_SELECTED.push(v);dfBuildOpts(dd,w);};})(wid);dd.appendChild(sel);}var ar=document.createElement('div');ar.style.cssText='padding:8px 14px;border-top:1px solid var(--border);text-align:center;';var ab=document.createElement('button');ab.className='df-apply';ab.textContent='Apply';ab.onclick=function(){dd.style.display='none';dfRefreshAll();};ar.appendChild(ab);dd.appendChild(ar);}
+function dfRender(cid){var area=document.getElementById(cid);if(!area)return;area.className='df-area';area.innerHTML='';['DAY','WEEK','MONTH','SEASON'].forEach(function(t){var btn=document.createElement('div');btn.className='df-pill'+(DF_TYPE===t?' active':'');btn.textContent=t;btn.onclick=(function(type){return function(){DF_TYPE=type;DF_SELECTED=[];if(type==='DAY')DF_SELECTED=['yesterday'];else if(type==='WEEK'){var w=dfGetWeeks();if(w.length)DF_SELECTED=[w[0].key];}else if(type==='MONTH'){var m=dfGetMonths();if(m.length)DF_SELECTED=[m[0].key];}else DF_SELECTED=['alltime'];dfRefreshAll();};})(t);area.appendChild(btn);});var wrap=document.createElement('div');wrap.className='df-dd-wrap';var sb=document.createElement('div');sb.className='df-sel';sb.innerHTML='<span>'+dfGetLabel()+'</span><span style="font-size:9px;">&#9662;</span>';var dd=document.createElement('div');dd.className='df-dd';sb.onclick=function(e){e.stopPropagation();var o=dd.style.display==='block';document.querySelectorAll('.df-dd').forEach(function(d){d.style.display='none';});if(!o){dfBuildOpts(dd,cid);dd.style.display='block';}};wrap.appendChild(sb);wrap.appendChild(dd);area.appendChild(wrap);}
+function dfRenderAll(){dfRender('df-home');dfRender('df-matchups');dfRender('df-league');}
 
 document.addEventListener('DOMContentLoaded',()=>{
   buildSidebar('home');
@@ -3920,14 +3680,8 @@ document.addEventListener('DOMContentLoaded',()=>{
       if(el) el.innerHTML=`<img src="${saved}" alt="">`;
     }
   });
-
-  // Close filter dropdowns when clicking outside
-  document.addEventListener('click', function(e) {
-    if (!e.target.closest('.df-btn') && !e.target.closest('.df-dropdown')) {
-      document.querySelectorAll('.df-dropdown').forEach(d=>d.style.display='none');
-      document.querySelectorAll('.df-btn').forEach(b=>b.classList.remove('open'));
-      _dfOpenId = null;
-    }
+  document.addEventListener('click', function() {
+    document.querySelectorAll('.df-dd').forEach(function(d){d.style.display='none';});
   });
 });
 </script>
