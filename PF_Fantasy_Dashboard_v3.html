@@ -3880,14 +3880,7 @@ function dfApply(wrapperId) {
   dfRefreshAll();
 }
 
-// Close dropdown when clicking outside
-document.addEventListener('click', function(e) {
-  if (!e.target.closest('.df-btn') && !e.target.closest('.df-dropdown')) {
-    document.querySelectorAll('.df-dropdown').forEach(d=>d.style.display='none');
-    document.querySelectorAll('.df-btn').forEach(b=>b.classList.remove('open'));
-    _dfOpenId = null;
-  }
-});
+
 
 document.addEventListener('DOMContentLoaded',()=>{
   buildSidebar('home');
@@ -3899,6 +3892,15 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(saved){
       const el=document.getElementById('av-lb-'+ag.id);
       if(el) el.innerHTML=`<img src="${saved}" alt="">`;
+    }
+  });
+
+  // Close filter dropdowns when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.df-btn') && !e.target.closest('.df-dropdown')) {
+      document.querySelectorAll('.df-dropdown').forEach(d=>d.style.display='none');
+      document.querySelectorAll('.df-btn').forEach(b=>b.classList.remove('open'));
+      _dfOpenId = null;
     }
   });
 });
